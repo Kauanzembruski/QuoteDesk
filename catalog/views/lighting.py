@@ -1,59 +1,46 @@
 from django.contrib.auth.decorators import login_required
-from django.db.models.deletion import ProtectedError
-from django.urls import reverse
-from django.shortcuts import get_object_or_404, redirect, render
+from django.shortcuts import render, redirect, get_object_or_404
 
-from catalog.forms import LightingModelForm
 from catalog.models import Lighting
+
 
 @login_required
 def lighting_detail(request):
-    lighting = Lighting.objects.first()
+    kit_2, _ = Lighting.objects.get_or_create(
+        type=Lighting.Type.KIT_2,
+        defaults={
+            "price": 0,
+            "active": True,
+        }
+    )
+
+    kit_4, _ = Lighting.objects.get_or_create(
+        type=Lighting.Type.KIT_4,
+        defaults={
+            "price": 0,
+            "active": True,
+        }
+    )
 
     return render(
         request,
         "catalog/lighting_detail.html",
         {
-            "lighting": lighting,
+            "kit_2": kit_2,
+            "kit_4": kit_4,
         }
     )
+
 
 @login_required
-def lighting_update(request):
-    lighting = Lighting.objects.first()
+def lighting_update(request, pk):
+    lighting = get_object_or_404(
+        Lighting,
+        pk=pk
+    )
 
     if request.method == "POST":
-        form = LightingModelForm(
-            request.POST,
-            instance=lighting
-        )
+        lighting.price = request.POST.get("price")
+        lighting.save()
 
-        if form.is_valid():
-            form.save()
-            return redirect("catalog:lighting_detail")
-
-    else:
-        form = LightingModelForm(
-            instance=lighting
-        )
-
-    return render(
-        request,
-        "catalog/partials/catalog_form.html",
-        {
-            "form": form,
-
-            "title": "Editar Iluminação",
-            "subtitle": "Atualize o valor utilizado por LED.",
-
-            "section_title": "Informações da iluminação",
-            "section_subtitle": "Defina o valor unitário e o status.",
-
-            "back_url": "catalog:lighting_detail",
-            "breadcrumb_parent": "Iluminação",
-
-            "save_label": "Salvar Alterações",
-
-            "item_type": "lighting",
-        }
-    )
+    return redirect("catalog:lighting_detail")

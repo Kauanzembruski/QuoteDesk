@@ -10,7 +10,7 @@ from .models import (
 
 class PoolModelForm(forms.ModelForm):
     class Meta:
-        labels = {"model": "Modelo", "length": "Comprimento (m)", "width": "Largura (m)", "base_price": "Pre?o base (R$)", "active": "Ativo"}
+        labels = {"model": "Modelo", "length": "Comprimento (m)", "width": "Largura (m)", "base_price": "Pre?o base (R$)", "active": "Ativo","image": "Imagem"}
         model = PoolModel
 
         fields = [
@@ -19,7 +19,12 @@ class PoolModelForm(forms.ModelForm):
             "width",
             "base_price",
             "active",
+            "image",
         ]
+
+        widgets = {
+            "image": forms.FileInput(),
+        }
 
 class HeatingModelForm(forms.ModelForm):
     class Meta:
@@ -55,11 +60,13 @@ class LightingModelForm(forms.ModelForm):
         model = Lighting
 
         fields = [
-            "unit_price",
+            "type",
+            "price",
             "active",
         ]
 
         labels = {
-            "unit_price": "Valor por LED",
+            "type": "Kit",
+            "price": "Preço",
             "active": "Ativo",
         }

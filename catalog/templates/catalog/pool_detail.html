@@ -1,6 +1,63 @@
 {% extends "catalog/partials/catalog_detail.html" %}
+
 {% block item_fields %}
-<div class="detail-item"><span class="detail-label">Modelo</span><span class="detail-value">{{ pool.model }}</span></div>
-<div class="detail-item"><span class="detail-label">Comprimento</span><span class="detail-value">{{ pool.length }} m</span></div>
-<div class="detail-item"><span class="detail-label">Largura</span><span class="detail-value">{{ pool.width }} m</span></div>
+
+{% if pool.image %}
+<div class="detail-item full">
+
+    <span class="detail-label">
+        Imagem
+    </span>
+
+    <img src="{{ pool.image.url }}" alt="{{ pool.model }}" style="
+                width: 100%;
+                max-width: 520px;
+                height: 280px;
+                object-fit: cover;
+                border-radius: 12px;
+                border: 1px solid #d9e4ee;
+            ">
+
+</div>
+{% endif %}
+
+
+<div class="detail-item">
+
+    <span class="detail-label">
+        Modelo
+    </span>
+
+    <span class="detail-value">
+        {{ pool.model }}
+    </span>
+
+</div>
+
+
+<div class="detail-item">
+
+    <span class="detail-label">
+        Comprimento
+    </span>
+
+    <span class="detail-value">
+        {{ pool.length }} m
+    </span>
+
+</div>
+
+
+<div class="detail-item">
+
+    <span class="detail-label">
+        Largura
+    </span>
+
+    <span class="detail-value">
+        {{ pool.width }} m
+    </span>
+
+</div>
+
 {% endblock %}

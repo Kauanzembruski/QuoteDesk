@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-
+{% load static %}
 {% block title %}
 Tratamento da Água | QuoteDesk
 {% endblock %}
@@ -7,7 +7,6 @@ Tratamento da Água | QuoteDesk
 
 {% block extra_css %}
 <style>
-
     .treatment-page {
         max-width: 980px;
         margin: 0 auto;
@@ -105,6 +104,19 @@ Tratamento da Água | QuoteDesk
         margin-bottom: 24px;
     }
 
+    .kit-title {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .kit-icon {
+        width: 70px;
+        height: 70px;
+        object-fit: contain;
+        flex-shrink: 0;
+    }
+
     .card-title h2 {
         margin: 0 0 6px;
 
@@ -190,11 +202,9 @@ Tratamento da Água | QuoteDesk
         border: none;
         border-radius: 9px;
 
-        background: linear-gradient(
-            90deg,
-            #0876d8,
-            #0d8df0
-        );
+        background: linear-gradient(90deg,
+                #0876d8,
+                #0d8df0);
 
         color: #ffffff;
 
@@ -209,7 +219,6 @@ Tratamento da Água | QuoteDesk
             grid-template-columns: 1fr;
         }
     }
-
 </style>
 {% endblock %}
 
@@ -220,18 +229,9 @@ Tratamento da Água | QuoteDesk
 
     <div class="breadcrumb-row">
 
-        <a
-            href="{% url 'catalog:catalog_hub' %}"
-            class="back-button"
-        >
-            <svg
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2.5"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-            >
+        <a href="{% url 'catalog:catalog_hub' %}" class="back-button">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+                stroke-linejoin="round">
                 <path d="M15 18l-6-6 6-6"></path>
             </svg>
         </a>
@@ -278,17 +278,14 @@ Tratamento da Água | QuoteDesk
 
             {% csrf_token %}
 
-            <input
-                type="hidden"
-                name="treatment_id"
-                value="{{ chlorine.pk }}"
-            >
+            <input type="hidden" name="treatment_id" value="{{ chlorine.pk }}">
 
             <div class="card-content">
 
                 <div class="card-title">
 
-                    <h2>
+                    <h2 class="kit-title">
+                        <img src="{% static 'img/cloro.png' %}" alt="LED" class="kit-icon">
                         Cloro
                     </h2>
 
@@ -306,19 +303,12 @@ Tratamento da Água | QuoteDesk
 
                     <div class="price-field">
 
-                        <span class="price-prefix">
+                        <label for="price-kit-2">
                             R$
-                        </span>
+                        </label>
 
-                        <input
-                            id="chlorine-price"
-                            type="number"
-                            name="price"
-                            step="0.01"
-                            min="0"
-                            value="{{ chlorine.price }}"
-                            required
-                        >
+                        <input id="chlorine-price" type="number" name="price" step="0.01" min="0"
+                            value="{{ chlorine.price }}" required>
 
                     </div>
 
@@ -328,10 +318,7 @@ Tratamento da Água | QuoteDesk
 
             <div class="card-footer">
 
-                <button
-                    type="submit"
-                    class="btn-save"
-                >
+                <button type="submit" class="btn-save">
                     Salvar
                 </button>
 
@@ -344,17 +331,14 @@ Tratamento da Água | QuoteDesk
 
             {% csrf_token %}
 
-            <input
-                type="hidden"
-                name="treatment_id"
-                value="{{ ozone.pk }}"
-            >
+            <input type="hidden" name="treatment_id" value="{{ ozone.pk }}">
 
             <div class="card-content">
 
                 <div class="card-title">
 
-                    <h2>
+                    <h2 class="kit-title">
+                        <img src="{% static 'img/ozone.png' %}" alt="LED" class="kit-icon">
                         Oz&ocirc;nio
                     </h2>
 
@@ -372,19 +356,12 @@ Tratamento da Água | QuoteDesk
 
                     <div class="price-field">
 
-                        <span class="price-prefix">
+                        <label for="price-kit-2">
                             R$
-                        </span>
+                        </label>
 
-                        <input
-                            id="ozone-price"
-                            type="number"
-                            name="price"
-                            step="0.01"
-                            min="0"
-                            value="{{ ozone.price }}"
-                            required
-                        >
+                        <input id="ozone-price" type="number" name="price" step="0.01" min="0" value="{{ ozone.price }}"
+                            required>
 
                     </div>
 
@@ -394,10 +371,7 @@ Tratamento da Água | QuoteDesk
 
             <div class="card-footer">
 
-                <button
-                    type="submit"
-                    class="btn-save"
-                >
+                <button type="submit" class="btn-save">
                     Salvar
                 </button>
 

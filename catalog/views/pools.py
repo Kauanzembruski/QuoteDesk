@@ -29,7 +29,7 @@ def pool_list(request):
 @login_required
 def pool_create(request):
     if request.method == "POST":
-        form = PoolModelForm(request.POST)
+        form = PoolModelForm(request.POST,request.FILES)
 
         if form.is_valid():
             form.save()
@@ -96,6 +96,7 @@ def pool_update(request, pk):
     if request.method == "POST":
         form = PoolModelForm(
             request.POST,
+            request.FILES,
             instance=pool
         )
 
@@ -123,7 +124,7 @@ def pool_update(request, pk):
             "subtitle": "Atualize as informações da piscina cadastrada.",
 
             "section_title": "Informações da piscina",
-            "section_subtitle": "Informe o modelo, medidas e valor base.",
+            "section_subtitle": "Informe o modelo, medidas, imagem e valor base.",
 
             "back_url": "catalog:pool_list",
             "breadcrumb_parent": "Piscinas",

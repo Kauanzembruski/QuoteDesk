@@ -1,10 +1,9 @@
 from django.urls import path
 
-from catalog.views import (
+from catalog.views.lighting import (
     lighting_detail,
     lighting_update,
 )
-
 
 urlpatterns = [
     path(
@@ -14,7 +13,7 @@ urlpatterns = [
     ),
 
     path(
-        "edit/",
+        "<int:pk>/edit/",
         lighting_update,
         name="lighting_update",
     ),

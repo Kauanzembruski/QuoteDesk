@@ -308,7 +308,7 @@
     </div>
 
 
-    <form method="post" class="form-card">
+    <form method="post" enctype="multipart/form-data" class="form-card">
 
         {% csrf_token %}
 
@@ -328,6 +328,26 @@
             </div>
 
 
+            {% if pool and pool.image %}
+            <div class="form-group full" style="margin-bottom: 24px;">
+
+                <label>
+                    Imagem atual
+                </label>
+
+                <img src="{{ pool.image.url }}" alt="{{ pool.model }}" style="
+                width: 100%;
+                max-width: 420px;
+                height: 220px;
+                object-fit: cover;
+                border-radius: 12px;
+                border: 1px solid #d9e4ee;
+            ">
+
+            </div>
+            {% endif %}
+
+
             {% if form.non_field_errors %}
             <div class="form-errors" role="alert">
                 {{ form.non_field_errors }}
@@ -337,76 +357,79 @@
 
             <div class="form-grid">
 
-                {% for field in form %}
 
-                <div class="form-group{% if field.field.widget.input_type == 'checkbox' %} full{% endif %}">
+                <div class="form-grid">
 
-                    {% if field.field.widget.input_type == "checkbox" %}
+                    {% for field in form %}
 
-                    <div class="checkbox-wrapper">
+                    <div class="form-group{% if field.field.widget.input_type == 'checkbox' %} full{% endif %}">
+
+                        {% if field.field.widget.input_type == "checkbox" %}
+
+                        <div class="checkbox-wrapper">
+
+                            {{ field }}
+
+                            <label for="{{ field.id_for_label }}">
+                                {{ field.label }}
+                            </label>
+
+                        </div>
+
+                        {% else %}
+
+                        <label for="{{ field.id_for_label }}">
+
+                            {% if field.name == "base_price" %}
+                            Pre&ccedil;o base (R$)
+
+                            {% elif field.name == "price" %}
+                            Pre&ccedil;o (R$)
+
+                            {% else %}
+                            {{ field.label }}
+                            {% endif %}
+
+                        </label>
 
                         {{ field }}
 
-                        <label for="{{ field.id_for_label }}">
-                            {{ field.label }}
-                        </label>
-
-                    </div>
-
-                    {% else %}
-
-                    <label for="{{ field.id_for_label }}">
-
-                        {% if field.name == "base_price" %}
-                        Pre&ccedil;o base (R$)
-
-                        {% elif field.name == "price" %}
-                        Pre&ccedil;o (R$)
-
-                        {% else %}
-                        {{ field.label }}
                         {% endif %}
 
-                    </label>
 
-                    {{ field }}
-
-                    {% endif %}
-
-
-                    {% if field.help_text %}
-                    <small>
-                        {{ field.help_text }}
-                    </small>
-                    {% endif %}
+                        {% if field.help_text %}
+                        <small>
+                            {{ field.help_text }}
+                        </small>
+                        {% endif %}
 
 
-                    {% for error in field.errors %}
-                    <div class="field-error" role="alert">
-                        {{ error }}
+                        {% for error in field.errors %}
+                        <div class="field-error" role="alert">
+                            {{ error }}
+                        </div>
+                        {% endfor %}
+
                     </div>
+
                     {% endfor %}
 
                 </div>
 
-                {% endfor %}
-
             </div>
 
-        </div>
 
+            <div class="form-actions">
 
-        <div class="form-actions">
+                <a href="{% url back_url %}" class="btn-cancel">
+                    Cancelar
+                </a>
 
-            <a href="{% url back_url %}" class="btn-cancel">
-                Cancelar
-            </a>
+                <button type="submit" class="btn-save">
+                    {{ save_label }}
+                </button>
 
-            <button type="submit" class="btn-save">
-                {{ save_label }}
-            </button>
-
-        </div>
+            </div>
 
     </form>
 

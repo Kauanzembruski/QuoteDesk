@@ -2,11 +2,16 @@ from django.db import models
 
 
 class Customer(models.Model):
-    name = models.CharField(max_length=150)
+    name = models.CharField(
+        max_length=150,
+        unique=True,
+    )
 
     document = models.CharField(
         max_length=18,
         unique=True,
+        null=True,
+        blank=True,
     )
 
     phone = models.CharField(

@@ -7,21 +7,26 @@ from customer.models import Customer
 from catalog.models import (
     PoolModel,
     HeatingOption,
+    Lighting,
     Waterfall,
     WaterTreatment,
 )
 
 
 class Quote(models.Model):
+
     class Status(models.TextChoices):
         DRAFT = "draft", "Rascunho"
         SENT = "sent", "Enviado"
         APPROVED = "approved", "Aprovado"
         REJECTED = "rejected", "Rejeitado"
+        CANCELLED = "cancelled", "Cancelado"
+
 
     customer = models.ForeignKey(
         Customer,
         on_delete=models.PROTECT,
+        related_name="quotes",
     )
 
     created_by = models.ForeignKey(
@@ -30,20 +35,30 @@ class Quote(models.Model):
         related_name="quotes",
     )
 
+
+    # Piscina
     pool = models.ForeignKey(
         PoolModel,
         on_delete=models.PROTECT,
+        related_name="quotes",
     )
 
+
+    # Adicionais
     heating = models.ForeignKey(
         HeatingOption,
         on_delete=models.PROTECT,
         null=True,
         blank=True,
+        related_name="quotes",
     )
 
-    lighting_quantity = models.PositiveIntegerField(
-        default=0,
+    lighting = models.ForeignKey(
+        Lighting,
+        on_delete=models.PROTECT,
+        null=True,
+        blank=True,
+        related_name="quotes",
     )
 
     waterfall = models.ForeignKey(
@@ -51,6 +66,7 @@ class Quote(models.Model):
         on_delete=models.PROTECT,
         null=True,
         blank=True,
+        related_name="quotes",
     )
 
     water_treatment = models.ForeignKey(
@@ -58,9 +74,11 @@ class Quote(models.Model):
         on_delete=models.PROTECT,
         null=True,
         blank=True,
+        related_name="quotes",
     )
 
-    # Preços salvos no momento da criação do orçamento
+
+    # Preços congelados no momento do orçamento
     pool_price = models.DecimalField(
         max_digits=10,
         decimal_places=2,
@@ -73,7 +91,7 @@ class Quote(models.Model):
         default=0,
     )
 
-    lighting_unit_price = models.DecimalField(
+    lighting_price = models.DecimalField(
         max_digits=10,
         decimal_places=2,
         default=0,
@@ -91,17 +109,20 @@ class Quote(models.Model):
         default=0,
     )
 
+
     total_price = models.DecimalField(
         max_digits=10,
         decimal_places=2,
         default=0,
     )
 
+
     status = models.CharField(
         max_length=20,
         choices=Status.choices,
         default=Status.DRAFT,
     )
+
 
     created_at = models.DateTimeField(
         auto_now_add=True,
@@ -111,20 +132,24 @@ class Quote(models.Model):
         auto_now=True,
     )
 
-    def calculate_total(self):
-        lighting_total = (
-            Decimal(self.lighting_quantity) * self.lighting_unit_price
-        )
 
-        total = (
+    def calculate_total(self):
+
+        return (
             self.pool_price
             + self.heating_price
-            + lighting_total
+            + self.lighting_price
             + self.waterfall_price
             + self.water_treatment_price
         )
 
-        return total
+
+    def save(self, *args, **kwargs):
+
+        self.total_price = self.calculate_total()
+
+        super().save(*args, **kwargs)
+
 
     def __str__(self):
         return f"Orçamento #{self.pk} - {self.customer}"

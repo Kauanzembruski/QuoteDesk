@@ -460,7 +460,11 @@
             <div class="detail-item">
 
                 <span class="detail-label">
+                    {% if breadcrumb_parent == "Piscinas" %}
+                    Pre&ccedil;o Base
+                    {% else %}
                     {{ price_label }}
+                    {% endif %}
                 </span>
 
                 <span class="price-value">

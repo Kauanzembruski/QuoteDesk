@@ -46,12 +46,14 @@ class HeatingOptionAdmin(admin.ModelAdmin):
 @admin.register(Lighting)
 class LightingAdmin(admin.ModelAdmin):
     list_display = (
-        "unit_price",
+        "type",
+        "price",
         "active",
     )
 
     list_filter = (
         "active",
+        "type",
     )
 
 
