@@ -93,28 +93,30 @@ Catálogo | QuoteDesk
     }
 
     .catalog-icon {
-        width: 58px;
-        height: 58px;
+        width: 110px;
+        height: 110px;
 
         display: flex;
         align-items: center;
         justify-content: center;
 
-        border-radius: 14px;
+        border-radius: 18px;
 
-        background: #eaf4ff;
+        background: #ffffff;
 
         overflow: hidden;
     }
 
     .catalog-icon img {
-        width: 100%;
-        height: 100%;
+        width: 96px;
+        height: 96px;
 
-        object-fit: cover;
+        object-fit: contain;
+        object-position: center;
 
-        border-radius: 14px;
+        display: block;
     }
+
 
     .catalog-card-content {
         margin-top: 28px;
@@ -206,7 +208,7 @@ Catálogo | QuoteDesk
     <div class="catalog-grid">
 
         <!-- PISCINAS -->
-        <a href="#" class="catalog-card">
+        <a href="{% url 'catalog:pool_list' %}" class="catalog-card">
 
             <div class="catalog-icon">
                 <img src="{% static 'img/PoolIcon.png' %}" alt="IconPool">
@@ -233,20 +235,10 @@ Catálogo | QuoteDesk
 
 
         <!-- AQUECIMENTO -->
-        <a href="#" class="catalog-card">
+        <a href="{% url 'catalog:heating_list' %}" class="catalog-card">
 
             <div class="catalog-icon">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <circle cx="12" cy="12" r="4"></circle>
-                    <path d="M12 2v2"></path>
-                    <path d="M12 20v2"></path>
-                    <path d="m4.93 4.93 1.41 1.41"></path>
-                    <path d="m17.66 17.66 1.41 1.41"></path>
-                    <path d="M2 12h2"></path>
-                    <path d="M20 12h2"></path>
-                    <path d="m6.34 17.66-1.41 1.41"></path>
-                    <path d="m19.07 4.93-1.41 1.41"></path>
-                </svg>
+                <img src="{% static 'img/Aquecimento.png' %}" alt="IconAquecimento">
             </div>
 
             <div class="catalog-card-content">
@@ -270,14 +262,10 @@ Catálogo | QuoteDesk
 
 
         <!-- ILUMINAÇÃO -->
-        <a href="#" class="catalog-card">
+        <a href="{% url 'catalog:lighting_detail' %}" class="catalog-card">
 
             <div class="catalog-icon">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M9 18h6"></path>
-                    <path d="M10 22h4"></path>
-                    <path d="M8.5 14.5A6 6 0 1 1 15.5 14.5C14.6 15.2 14 16.1 14 17h-4c0-.9-.6-1.8-1.5-2.5Z"></path>
-                </svg>
+                <img src="{% static 'img/LED.png' %}" alt="IconLED">
             </div>
 
             <div class="catalog-card-content">
@@ -301,15 +289,10 @@ Catálogo | QuoteDesk
 
 
         <!-- CASCATAS -->
-        <a href="#" class="catalog-card">
+        <a href="{% url 'catalog:waterfall_list' %}" class="catalog-card">
 
             <div class="catalog-icon">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M5 3h10a4 4 0 0 1 4 4v2"></path>
-                    <path d="M19 9v3"></path>
-                    <path d="M16 15c0 2 1.3 3 3 3s3-1 3-3"></path>
-                    <path d="M3 21h18"></path>
-                </svg>
+                <img src="{% static 'img/waterfall.png' %}" alt="Iconwaterfall">
             </div>
 
             <div class="catalog-card-content">
@@ -333,13 +316,10 @@ Catálogo | QuoteDesk
 
 
         <!-- TRATAMENTO DA ÁGUA -->
-        <a href="#" class="catalog-card">
+        <a href="{% url 'catalog:treatment_detail' %}" class="catalog-card">
 
             <div class="catalog-icon">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M12 2s6 6.2 6 12a6 6 0 0 1-12 0c0-5.8 6-12 6-12Z"></path>
-                    <path d="M9 14c.7 1.3 1.7 2 3 2"></path>
-                </svg>
+                <img src="{% static 'img/agua.png' %}" alt="Iconwater">
             </div>
 
             <div class="catalog-card-content">

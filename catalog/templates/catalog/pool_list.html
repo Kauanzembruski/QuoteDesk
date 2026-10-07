@@ -1,0 +1,58 @@
+{% extends "catalog/partials/catalog_list.html" %}
+
+{% block table_head %}
+<th>Modelo</th>
+<th>Comprimento</th>
+<th>Largura</th>
+<th>Preço Base</th>
+<th>Status</th>
+<th>Ações</th>
+{% endblock %}
+
+{% block table_body %}
+
+{% for pool in pools %}
+
+<tr>
+    <td>{{ pool.model }}</td>
+    <td>{{ pool.length }} m</td>
+    <td>{{ pool.width }} m</td>
+    <td>R$ {{ pool.base_price }}</td>
+
+    <td>
+        {% if pool.active %}
+        <span class="status-badge status-active">
+            Ativa
+        </span>
+        {% else %}
+        <span class="status-badge status-inactive">
+            Inativa
+        </span>
+        {% endif %}
+    </td>
+
+    <td>
+        <div class="actions-menu">
+            <button type="button" class="actions-button" onclick="toggleActions(this)" aria-label="Ações de {{ pool }}">
+                &#8942;
+            </button>
+            <div class="actions-dropdown">
+                <a href="{% url 'catalog:pool_detail' pool.pk %}">Visualizar</a>
+                <a href="{% url 'catalog:pool_update' pool.pk %}">Editar</a>
+                <a href="{% url 'catalog:pool_delete' pool.pk %}">Excluir</a>
+            </div>
+        </div>
+    </td>
+</tr>
+
+{% empty %}
+
+<tr>
+    <td colspan="6">
+        Nenhum item cadastrado.
+    </td>
+</tr>
+
+{% endfor %}
+
+{% endblock %}

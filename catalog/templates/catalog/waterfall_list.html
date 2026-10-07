@@ -1,0 +1,83 @@
+{% extends "catalog/partials/catalog_list.html" %}
+
+{% block table_head %}
+    <th>Modelo</th>
+    <th>Pre&ccedil;o</th>
+    <th>Status</th>
+    <th>A&ccedil;&otilde;es</th>
+{% endblock %}
+
+{% block table_body %}
+
+    {% for waterfall in waterfalls %}
+
+        <tr>
+
+            <td>
+                {{ waterfall.model }}
+            </td>
+
+            <td>
+                R$ {{ waterfall.price }}
+            </td>
+
+            <td>
+                {% if waterfall.active %}
+                    <span class="status-badge status-active">
+                        Ativa
+                    </span>
+                {% else %}
+                    <span class="status-badge status-inactive">
+                        Inativa
+                    </span>
+                {% endif %}
+            </td>
+
+            <td>
+
+                <div class="actions-menu">
+
+                    <button
+                        type="button"
+                        class="actions-button"
+                        onclick="toggleActions(this)"
+                    >
+                        &#8942;
+                    </button>
+
+                    <div class="actions-dropdown">
+
+                        <a href="{% url 'catalog:waterfall_detail' waterfall.pk %}">
+                            Visualizar
+                        </a>
+
+                        <a href="{% url 'catalog:waterfall_update' waterfall.pk %}">
+                            Editar
+                        </a>
+
+                        <a
+                            href="{% url 'catalog:waterfall_delete' waterfall.pk %}"
+                            class="delete-action"
+                        >
+                            Excluir
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </td>
+
+        </tr>
+
+    {% empty %}
+
+        <tr>
+            <td colspan="4">
+                Nenhuma cascata cadastrada.
+            </td>
+        </tr>
+
+    {% endfor %}
+
+{% endblock %}

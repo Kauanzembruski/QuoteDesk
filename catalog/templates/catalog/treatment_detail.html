@@ -1,0 +1,412 @@
+{% extends "base.html" %}
+
+{% block title %}
+Tratamento da Água | QuoteDesk
+{% endblock %}
+
+
+{% block extra_css %}
+<style>
+
+    .treatment-page {
+        max-width: 980px;
+        margin: 0 auto;
+    }
+
+    .breadcrumb-row {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 28px;
+    }
+
+    .back-button {
+        width: 34px;
+        height: 34px;
+
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+
+        border: 1px solid #dbe5ee;
+        border-radius: 9px;
+
+        background: #ffffff;
+        color: #0b2545;
+
+        text-decoration: none;
+    }
+
+    .back-button svg {
+        width: 18px;
+        height: 18px;
+    }
+
+    .breadcrumb {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+
+        font-size: 14px;
+        color: #7b8fa4;
+    }
+
+    .breadcrumb a {
+        color: #7b8fa4;
+        text-decoration: none;
+    }
+
+    .breadcrumb strong {
+        color: #102b4c;
+    }
+
+    .page-header {
+        margin-bottom: 28px;
+    }
+
+    .page-header h1 {
+        margin: 0 0 7px;
+
+        font-size: 34px;
+        color: #0b2545;
+    }
+
+    .page-header p {
+        margin: 0;
+
+        font-size: 14px;
+        color: #718399;
+    }
+
+    .treatment-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 22px;
+    }
+
+    .treatment-card {
+        background: #ffffff;
+
+        border: 1px solid #d9e4ee;
+        border-radius: 16px;
+
+        overflow: hidden;
+
+        box-shadow:
+            0 12px 30px rgba(21, 52, 82, 0.06),
+            0 2px 8px rgba(21, 52, 82, 0.04);
+    }
+
+    .card-content {
+        padding: 28px;
+    }
+
+    .card-title {
+        margin-bottom: 24px;
+    }
+
+    .card-title h2 {
+        margin: 0 0 6px;
+
+        font-size: 20px;
+        color: #102b4c;
+    }
+
+    .card-title p {
+        margin: 0;
+
+        font-size: 13px;
+        color: #7b8fa4;
+    }
+
+    .form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .form-group label {
+        font-size: 13px;
+        font-weight: 700;
+        color: #304861;
+    }
+
+    .price-field {
+        position: relative;
+    }
+
+    .price-prefix {
+        position: absolute;
+
+        left: 14px;
+        top: 50%;
+
+        transform: translateY(-50%);
+
+        font-size: 14px;
+        font-weight: 700;
+
+        color: #718399;
+    }
+
+    .price-field input {
+        width: 100%;
+        height: 46px;
+
+        padding: 0 14px 0 43px;
+
+        border: 1px solid #cfdbe7;
+        border-radius: 10px;
+
+        font-size: 15px;
+        color: #102b4c;
+
+        outline: none;
+    }
+
+    .price-field input:focus {
+        border-color: #0d8df0;
+
+        box-shadow:
+            0 0 0 3px rgba(13, 141, 240, .10);
+    }
+
+    .card-footer {
+        display: flex;
+        justify-content: flex-end;
+
+        padding: 18px 28px;
+
+        border-top: 1px solid #e5edf4;
+
+        background: #f8fafc;
+    }
+
+    .btn-save {
+        height: 42px;
+
+        padding: 0 18px;
+
+        border: none;
+        border-radius: 9px;
+
+        background: linear-gradient(
+            90deg,
+            #0876d8,
+            #0d8df0
+        );
+
+        color: #ffffff;
+
+        font-size: 14px;
+        font-weight: 700;
+
+        cursor: pointer;
+    }
+
+    @media (max-width: 700px) {
+        .treatment-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+
+</style>
+{% endblock %}
+
+
+{% block content %}
+
+<div class="treatment-page">
+
+    <div class="breadcrumb-row">
+
+        <a
+            href="{% url 'catalog:catalog_hub' %}"
+            class="back-button"
+        >
+            <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+            >
+                <path d="M15 18l-6-6 6-6"></path>
+            </svg>
+        </a>
+
+        <nav class="breadcrumb">
+
+            <a href="{% url 'dashboard:dashboard' %}">
+                Dashboard
+            </a>
+
+            <span>&rsaquo;</span>
+
+            <a href="{% url 'catalog:catalog_hub' %}">
+                Cat&aacute;logo
+            </a>
+
+            <span>&rsaquo;</span>
+
+            <strong>
+                Tratamento da &Aacute;gua
+            </strong>
+
+        </nav>
+
+    </div>
+
+
+    <div class="page-header">
+
+        <h1>
+            Tratamento da Água
+        </h1>
+
+        <p>
+            Configure os valores dos tratamentos disponíveis.
+        </p>
+
+    </div>
+
+
+    <div class="treatment-grid">
+
+        <form method="post" class="treatment-card">
+
+            {% csrf_token %}
+
+            <input
+                type="hidden"
+                name="treatment_id"
+                value="{{ chlorine.pk }}"
+            >
+
+            <div class="card-content">
+
+                <div class="card-title">
+
+                    <h2>
+                        Cloro
+                    </h2>
+
+                    <p>
+                        Defina o valor do tratamento com cloro.
+                    </p>
+
+                </div>
+
+                <div class="form-group">
+
+                    <label for="chlorine-price">
+                        Pre&ccedil;o
+                    </label>
+
+                    <div class="price-field">
+
+                        <span class="price-prefix">
+                            R$
+                        </span>
+
+                        <input
+                            id="chlorine-price"
+                            type="number"
+                            name="price"
+                            step="0.01"
+                            min="0"
+                            value="{{ chlorine.price }}"
+                            required
+                        >
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="card-footer">
+
+                <button
+                    type="submit"
+                    class="btn-save"
+                >
+                    Salvar
+                </button>
+
+            </div>
+
+        </form>
+
+
+        <form method="post" class="treatment-card">
+
+            {% csrf_token %}
+
+            <input
+                type="hidden"
+                name="treatment_id"
+                value="{{ ozone.pk }}"
+            >
+
+            <div class="card-content">
+
+                <div class="card-title">
+
+                    <h2>
+                        Oz&ocirc;nio
+                    </h2>
+
+                    <p>
+                        Defina o valor do tratamento com oz&ocirc;nio.
+                    </p>
+
+                </div>
+
+                <div class="form-group">
+
+                    <label for="ozone-price">
+                        Pre&ccedil;o
+                    </label>
+
+                    <div class="price-field">
+
+                        <span class="price-prefix">
+                            R$
+                        </span>
+
+                        <input
+                            id="ozone-price"
+                            type="number"
+                            name="price"
+                            step="0.01"
+                            min="0"
+                            value="{{ ozone.price }}"
+                            required
+                        >
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="card-footer">
+
+                <button
+                    type="submit"
+                    class="btn-save"
+                >
+                    Salvar
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+{% endblock %}

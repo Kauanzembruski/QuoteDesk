@@ -7,7 +7,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>{% block title %}QuoteDesk{% endblock %}</title>
-
+    {% block extra_css %}
+    {% endblock %}
     <style>
         * {
             margin: 0;
@@ -350,8 +351,6 @@
         }
     </style>
 
-    {% block extra_css %}
-    {% endblock %}
 </head>
 
 <body>
@@ -405,7 +404,8 @@
 
 
                 <!-- CATÁLOGO -->
-                <a href="{% url 'catalog:catalog_hub' %}" class="nav-link {% if request.resolver_match.app_name == 'catalog' %}active{% endif %}">
+                <a href="{% url 'catalog:catalog_hub' %}"
+                    class="nav-link {% if request.resolver_match.app_name == 'catalog' %}active{% endif %}">
 
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M12 2 3 7l9 5 9-5-9-5Z"></path>

@@ -1,0 +1,601 @@
+{% extends "base.html" %}
+
+{% block title %}
+{{ title }} | QuoteDesk
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .breadcrumb-row {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 24px;
+    }
+
+    .breadcrumb {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin: 0;
+
+        font-size: 14px;
+        color: #7b8fa4;
+    }
+
+    .breadcrumb a {
+        color: #7b8fa4;
+        text-decoration: none;
+    }
+
+    .breadcrumb a:hover {
+        color: #0d8df0;
+    }
+
+    .breadcrumb strong {
+        color: #102b4c;
+    }
+
+    .back-button {
+        width: 34px;
+        height: 34px;
+
+        flex-shrink: 0;
+
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+
+        border: 1px solid #dbe5ee;
+        border-radius: 9px;
+
+        background: #ffffff;
+        color: #0b2545;
+
+        text-decoration: none;
+
+        transition: .2s ease;
+    }
+
+    .back-button svg {
+        width: 18px;
+        height: 18px;
+    }
+
+    .back-button:hover {
+        background: #f3f8fd;
+        border-color: #0d8df0;
+        color: #0d8df0;
+    }
+
+    .page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 20px;
+
+        margin-bottom: 28px;
+    }
+
+    .page-title h1 {
+        margin: 0 0 7px;
+
+        font-size: 36px;
+        color: #0b2545;
+    }
+
+    .page-title p {
+        margin: 0;
+
+        color: #718399;
+        font-size: 14px;
+    }
+
+    .new-item-button {
+        display: inline-flex;
+        align-items: center;
+        gap: 9px;
+
+        padding: 13px 18px;
+
+        border: none;
+        border-radius: 10px;
+
+        background: linear-gradient(
+            90deg,
+            #0876d8,
+            #0d8df0
+        );
+
+        color: #ffffff;
+
+        text-decoration: none;
+        font-size: 14px;
+        font-weight: 700;
+
+        box-shadow:
+            0 7px 18px rgba(13, 141, 240, .18);
+
+        transition: .2s ease;
+    }
+
+    .new-item-button:hover {
+        transform: translateY(-1px);
+
+        box-shadow:
+            0 10px 24px rgba(13, 141, 240, .24);
+    }
+
+    .catalog-card {
+        background: #ffffff;
+
+        border: 1px solid #d9e4ee;
+        border-radius: 16px;
+
+        overflow: hidden;
+
+        box-shadow:
+            0 12px 30px rgba(21, 52, 82, 0.06),
+            0 2px 8px rgba(21, 52, 82, 0.04);
+    }
+
+    .catalog-toolbar {
+        display: flex;
+        gap: 12px;
+
+        padding: 18px;
+
+        background: #fcfdff;
+
+        border-bottom: 1px solid #e3ebf3;
+    }
+
+    .search-wrapper {
+        flex: 1;
+        position: relative;
+    }
+
+    .search-wrapper svg {
+        position: absolute;
+
+        left: 15px;
+        top: 50%;
+
+        transform: translateY(-50%);
+
+        width: 19px;
+        height: 19px;
+
+        color: #748ca3;
+    }
+
+    .search-wrapper input {
+        width: 100%;
+        height: 46px;
+
+        padding: 0 16px 0 45px;
+
+        border: 1px solid #cfdbe7;
+        border-radius: 10px;
+
+        background: #ffffff;
+
+        font-size: 14px;
+        color: #0b2545;
+
+        outline: none;
+
+        transition: .2s ease;
+    }
+
+    .search-wrapper input:focus {
+        border-color: #0d8df0;
+
+        box-shadow:
+            0 0 0 3px rgba(13, 141, 240, .10);
+    }
+
+    .catalog-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .catalog-table thead {
+        background: #f3f7fb;
+    }
+
+    .catalog-table th {
+        text-align: left;
+
+        padding: 15px 18px;
+
+        font-size: 12px;
+        font-weight: 700;
+
+        color: #40556c;
+
+        border-bottom: 1px solid #dfe8f1;
+    }
+
+    .catalog-table td {
+        padding: 16px 18px;
+
+        font-size: 14px;
+
+        color: #2f4760;
+
+        border-bottom: 1px solid #e6edf4;
+
+        vertical-align: middle;
+
+        transition: background .15s ease;
+    }
+
+    .catalog-table tbody tr:nth-child(odd) td {
+        background: #ffffff;
+    }
+
+    .catalog-table tbody tr:nth-child(even) td {
+        background: #f6f9fc;
+    }
+
+    .catalog-table tbody tr:hover td {
+        background: #edf6ff;
+    }
+
+    .item-name {
+        font-weight: 700;
+        color: #102b4c;
+    }
+
+    .item-price {
+        font-weight: 700;
+        color: #102b4c;
+    }
+
+    .status-badge {
+        display: inline-block;
+
+        padding: 6px 12px;
+
+        border-radius: 999px;
+
+        font-size: 12px;
+        font-weight: 700;
+    }
+
+    .status-active {
+        background: #dff7e8;
+        color: #138a4a;
+    }
+
+    .status-inactive {
+        background: #f2f4f6;
+        color: #667085;
+    }
+
+    .actions-menu {
+        position: relative;
+        display: inline-block;
+    }
+
+    .actions-button {
+        width: 34px;
+        height: 34px;
+
+        border: 1px solid #d8e2ec;
+        border-radius: 8px;
+
+        background: #ffffff;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        color: #304861;
+
+        cursor: pointer;
+
+        transition: .2s ease;
+    }
+
+    .actions-button:hover {
+        background: #f4f9ff;
+        border-color: #0d8df0;
+        color: #0d8df0;
+    }
+
+    .actions-dropdown {
+        position: absolute;
+
+        top: calc(100% + 8px);
+        right: 0;
+
+        min-width: 140px;
+
+        display: none;
+
+        background: #ffffff;
+
+        border: 1px solid #d8e2ec;
+        border-radius: 10px;
+
+        box-shadow:
+            0 10px 25px rgba(16, 43, 76, .12);
+
+        overflow: hidden;
+
+        z-index: 30;
+    }
+
+    .actions-dropdown.show {
+        display: block;
+    }
+
+    .actions-menu.open-up .actions-dropdown {
+        top: auto;
+        bottom: calc(100% + 8px);
+    }
+
+    .actions-dropdown a {
+        display: block;
+
+        padding: 11px 14px;
+
+        color: #304861;
+
+        text-decoration: none;
+
+        font-size: 13px;
+        font-weight: 600;
+
+        transition: .15s ease;
+    }
+
+    .actions-dropdown a:hover {
+        background: #f4f8fc;
+        color: #0d8df0;
+    }
+
+    .actions-dropdown .delete-action {
+        color: #d93025;
+    }
+
+    .actions-dropdown .delete-action:hover {
+        background: #fff3f2;
+        color: #b42318;
+    }
+
+    .empty-state {
+        padding: 60px 20px;
+
+        text-align: center;
+
+        color: #718399;
+
+        background: #ffffff;
+    }
+
+    .table-footer {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        padding: 16px 18px;
+
+        background: #ffffff;
+
+        color: #718399;
+
+        font-size: 13px;
+    }
+
+    @media (max-width: 900px) {
+        .page-header {
+            flex-direction: column;
+        }
+
+        .catalog-card {
+            overflow-x: auto;
+        }
+
+        .catalog-table {
+            min-width: 760px;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<div class="breadcrumb-row">
+
+    <a
+        href="{% url 'catalog:catalog_hub' %}"
+        class="back-button"
+        aria-label="Voltar para catálogo"
+        title="Voltar para catálogo"
+    >
+        <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+        >
+            <path d="M15 18l-6-6 6-6"></path>
+        </svg>
+    </a>
+
+    <div class="breadcrumb">
+
+        <a href="{% url 'dashboard:dashboard' %}">
+            Dashboard
+        </a>
+
+        <span>›</span>
+
+        <a href="{% url 'catalog:catalog_hub' %}">
+            Catálogo
+        </a>
+
+        <span>›</span>
+
+        <strong>
+            {{ title }}
+        </strong>
+
+    </div>
+
+</div>
+
+
+<div class="page-header">
+
+    <div class="page-title">
+
+        <h1>
+            {{ title }}
+        </h1>
+
+        <p>
+            {{ subtitle }}
+        </p>
+
+    </div>
+
+    <a
+        href="{% url create_url %}"
+        class="new-item-button"
+    >
+        + {{ create_label }}
+    </a>
+
+</div>
+
+
+<div class="catalog-card">
+
+    <div class="catalog-toolbar">
+
+        <div class="search-wrapper">
+
+            <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+            >
+                <circle cx="11" cy="11" r="7"></circle>
+                <path d="m20 20-3.5-3.5"></path>
+            </svg>
+
+            <input
+                type="search"
+                id="catalog-search"
+                aria-label="{{ search_placeholder }}"
+                placeholder="{{ search_placeholder|default:'Buscar...' }}"
+            >
+
+        </div>
+
+    </div>
+
+
+    <table class="catalog-table">
+
+        <thead>
+            <tr>
+                {% block table_head %}
+                {% endblock %}
+            </tr>
+        </thead>
+
+        <tbody>
+            {% block table_body %}
+            {% endblock %}
+        </tbody>
+
+    </table>
+
+
+    <div class="table-footer">
+        {% block table_footer %}
+        {% endblock %}
+    </div>
+
+</div>
+
+{% endblock %}
+
+
+{% block extra_js %}
+<script>
+    document.getElementById("catalog-search").addEventListener("input", function () {
+        const query = this.value.toLocaleLowerCase("pt-BR").trim();
+        document.querySelectorAll(".catalog-table tbody tr").forEach(row => {
+            const cells = Array.from(row.cells).slice(0, -1);
+            if (row.cells.length > 1) {
+                row.hidden = !cells.some(cell => cell.textContent.toLocaleLowerCase("pt-BR").includes(query));
+            }
+        });
+    });
+
+    function toggleActions(button) {
+        const container = button.closest(".actions-menu");
+        const menu = container.querySelector(".actions-dropdown");
+
+        document
+            .querySelectorAll(".actions-dropdown")
+            .forEach(item => {
+                if (item !== menu) {
+                    item.classList.remove("show");
+                }
+            });
+
+        document
+            .querySelectorAll(".actions-menu")
+            .forEach(item => {
+                if (item !== container) {
+                    item.classList.remove("open-up");
+                }
+            });
+
+        const rows = document.querySelectorAll(
+            ".catalog-table tbody tr"
+        );
+
+        const currentRow = button.closest("tr");
+
+        const rowIndex = Array
+            .from(rows)
+            .indexOf(currentRow);
+
+        container.classList.toggle(
+            "open-up",
+            rowIndex >= rows.length - 2
+        );
+
+        menu.classList.toggle("show");
+    }
+
+
+    document.addEventListener(
+        "click",
+        function(event) {
+
+            if (!event.target.closest(".actions-menu")) {
+
+                document
+                    .querySelectorAll(".actions-dropdown")
+                    .forEach(menu => {
+                        menu.classList.remove("show");
+                    });
+
+            }
+
+        }
+    );
+</script>
+{% endblock %}

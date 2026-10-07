@@ -70,6 +70,10 @@ class HeatingOption(models.Model):
             )
         ]
 
+    @property
+    def measure_unit(self):
+        return "m" if self.type == self.Type.SOLAR else "BTU"
+
     def __str__(self):
         if self.type == self.Type.SOLAR:
             return f"{self.get_type_display()} - {self.measure} m - R$ {self.price}"

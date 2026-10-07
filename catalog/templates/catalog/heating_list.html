@@ -1,0 +1,58 @@
+{% extends "catalog/partials/catalog_list.html" %}
+
+{% block table_head %}
+<th>Tipo</th>
+<th>Medida</th>
+<th>Preço</th>
+<th>Status</th>
+<th>Ações</th>
+{% endblock %}
+
+{% block table_body %}
+
+{% for heating in heating_options %}
+
+<tr>
+    <td>{{ heating.get_type_display }}</td>
+
+    <td>
+        {{ heating.measure }} {{ heating.measure_unit }}
+    </td>
+
+    <td>
+        R$ {{ heating.price }}
+    </td>
+
+    <td>
+        {% if heating.active %}
+        <span class="status-badge status-active">
+            Ativa
+        </span>
+        {% else %}
+        <span class="status-badge status-inactive">
+            Inativa
+        </span>
+        {% endif %}
+    </td>
+
+    <td>
+        <div class="actions-menu">
+            <button type="button" class="actions-button" onclick="toggleActions(this)" aria-label="Ações de {{ pool }}">
+                &#8942;
+            </button>
+            <div class="actions-dropdown">
+                <a href="{% url 'catalog:heating_detail' heating.pk %}">Visualizar</a>
+                <a href="{% url 'catalog:heating_update' heating.pk %}">Editar</a>
+                <a href="{% url 'catalog:heating_delete' heating.pk %}">Excluir</a>
+            </div>
+        </div>
+    </td>
+</tr>
+
+{% empty %}
+<tr>
+    <td colspan="5">Nenhum aquecimento cadastrado.</td>
+</tr>
+{% endfor %}
+
+{% endblock %}

@@ -1,0 +1,5 @@
+{% extends "catalog/partials/catalog_detail.html" %}
+{% block item_fields %}
+<div class="detail-item"><span class="detail-label">Tipo</span><span class="detail-value">{{ heating.get_type_display }}</span></div>
+<div class="detail-item"><span class="detail-label">Medida</span><span class="detail-value">{{ heating.measure }} {{ heating.measure_unit }}</span></div>
+{% endblock %}
