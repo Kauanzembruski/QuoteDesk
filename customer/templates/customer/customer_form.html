@@ -1,0 +1,515 @@
+{% extends "base.html" %}
+
+{% block title %}
+    {% if customer %}
+        Editar Cliente | QuoteDesk
+    {% else %}
+        Novo Cliente | QuoteDesk
+    {% endif %}
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .form-page {
+        max-width: 980px;
+        margin: 0 auto;
+    }
+
+    .breadcrumb {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 18px;
+        font-size: 14px;
+        color: #7b8fa4;
+    }
+
+    .breadcrumb a {
+        color: #7b8fa4;
+        text-decoration: none;
+    }
+
+    .breadcrumb a:hover {
+        color: #0d8df0;
+    }
+
+    .breadcrumb strong {
+        color: #102b4c;
+    }
+
+    .page-header {
+        margin-bottom: 28px;
+    }
+
+    .page-header h1 {
+        margin: 0 0 7px;
+        font-size: 34px;
+        color: #0b2545;
+    }
+
+    .page-header p {
+        margin: 0;
+        color: #718399;
+        font-size: 14px;
+    }
+
+    .form-card {
+        background: #ffffff;
+        border: 1px solid #d9e4ee;
+        border-radius: 16px;
+        overflow: hidden;
+
+        box-shadow:
+            0 12px 30px rgba(21, 52, 82, 0.06),
+            0 2px 8px rgba(21, 52, 82, 0.04);
+    }
+
+    .form-section {
+        padding: 28px;
+    }
+
+    .form-section + .form-section {
+        border-top: 1px solid #e5edf4;
+    }
+
+    .section-title {
+        margin-bottom: 22px;
+    }
+
+    .section-title h2 {
+        margin: 0 0 5px;
+        font-size: 18px;
+        color: #102b4c;
+    }
+
+    .section-title p {
+        margin: 0;
+        font-size: 13px;
+        color: #7b8fa4;
+    }
+
+    .form-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
+    }
+
+    .form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 7px;
+    }
+
+    .form-group.full {
+        grid-column: 1 / -1;
+    }
+
+    .form-group label {
+        font-size: 13px;
+        font-weight: 700;
+        color: #304861;
+    }
+
+    .form-group input {
+        width: 100%;
+        height: 46px;
+
+        padding: 0 14px;
+
+        border: 1px solid #cfdbe7;
+        border-radius: 10px;
+
+        background: #ffffff;
+
+        color: #102b4c;
+        font-size: 14px;
+
+        outline: none;
+
+        transition: .2s ease;
+    }
+
+    .form-group input::placeholder {
+        color: #9aabba;
+    }
+
+    .form-group input:focus {
+        border-color: #0d8df0;
+
+        box-shadow:
+            0 0 0 3px rgba(13, 141, 240, .10);
+    }
+
+    .field-error {
+        margin: 0;
+        font-size: 12px;
+        color: #d93025;
+    }
+
+    .form-errors {
+        margin-bottom: 22px;
+        padding: 14px 16px;
+
+        border: 1px solid #f0c8c5;
+        border-radius: 10px;
+
+        background: #fff5f4;
+
+        color: #b42318;
+        font-size: 13px;
+    }
+
+    .form-actions {
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        gap: 12px;
+
+        padding: 20px 28px;
+
+        background: #f8fafc;
+
+        border-top: 1px solid #e5edf4;
+    }
+
+    .btn-cancel {
+        height: 44px;
+
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+
+        padding: 0 18px;
+
+        border: 1px solid #cfdbe7;
+        border-radius: 9px;
+
+        background: #ffffff;
+
+        color: #40556c;
+
+        text-decoration: none;
+        font-size: 14px;
+        font-weight: 600;
+
+        transition: .2s ease;
+    }
+
+    .btn-cancel:hover {
+        background: #f4f7fa;
+        border-color: #b9c8d6;
+    }
+
+    .btn-save {
+        height: 44px;
+
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+
+        padding: 0 20px;
+
+        border: none;
+        border-radius: 9px;
+
+        background: linear-gradient(
+            90deg,
+            #0876d8,
+            #0d8df0
+        );
+
+        color: #ffffff;
+
+        font-size: 14px;
+        font-weight: 700;
+
+        cursor: pointer;
+
+        box-shadow:
+            0 7px 18px rgba(13, 141, 240, .18);
+
+        transition: .2s ease;
+    }
+
+    .btn-save:hover {
+        transform: translateY(-1px);
+
+        box-shadow:
+            0 10px 24px rgba(13, 141, 240, .24);
+    }
+
+    @media (max-width: 700px) {
+        .form-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .form-group.full {
+            grid-column: auto;
+        }
+
+        .form-actions {
+            flex-direction: column-reverse;
+        }
+
+        .btn-cancel,
+        .btn-save {
+            width: 100%;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="form-page">
+
+    <div class="breadcrumb">
+        <a href="{% url 'dashboard:dashboard' %}">
+            Dashboard
+        </a>
+
+        <span>›</span>
+
+        <a href="{% url 'customer:customer_list' %}">
+            Clientes
+        </a>
+
+        <span>›</span>
+
+        <strong>
+            {% if customer %}
+                Editar Cliente
+            {% else %}
+                Novo Cliente
+            {% endif %}
+        </strong>
+    </div>
+
+    <div class="page-header">
+
+        <h1>
+            {% if customer %}
+                Editar Cliente
+            {% else %}
+                Novo Cliente
+            {% endif %}
+        </h1>
+
+        <p>
+            {% if customer %}
+                Atualize as informações cadastradas do cliente.
+            {% else %}
+                Cadastre as informações do cliente no sistema.
+            {% endif %}
+        </p>
+
+    </div>
+
+    <form method="post">
+        {% csrf_token %}
+
+        <div class="form-card">
+
+            {% if form.non_field_errors %}
+                <div class="form-section">
+                    <div class="form-errors">
+                        {{ form.non_field_errors }}
+                    </div>
+                </div>
+            {% endif %}
+
+            <div class="form-section">
+
+                <div class="section-title">
+                    <h2>Dados do cliente</h2>
+                    <p>Informações principais para identificação e contato.</p>
+                </div>
+
+                <div class="form-grid">
+
+                    <div class="form-group full">
+
+                        <label for="{{ form.name.id_for_label }}">
+                            Nome
+                        </label>
+
+                        {{ form.name }}
+
+                        {% for error in form.name.errors %}
+                            <p class="field-error">
+                                {{ error }}
+                            </p>
+                        {% endfor %}
+
+                    </div>
+
+                    <div class="form-group">
+
+                        <label for="{{ form.document.id_for_label }}">
+                            CPF / CNPJ
+                        </label>
+
+                        {{ form.document }}
+
+                        {% for error in form.document.errors %}
+                            <p class="field-error">
+                                {{ error }}
+                            </p>
+                        {% endfor %}
+
+                    </div>
+
+                    <div class="form-group">
+
+                        <label for="{{ form.phone.id_for_label }}">
+                            Telefone
+                        </label>
+
+                        {{ form.phone }}
+
+                        {% for error in form.phone.errors %}
+                            <p class="field-error">
+                                {{ error }}
+                            </p>
+                        {% endfor %}
+
+                    </div>
+
+                    <div class="form-group full">
+
+                        <label for="{{ form.email.id_for_label }}">
+                            E-mail
+                        </label>
+
+                        {{ form.email }}
+
+                        {% for error in form.email.errors %}
+                            <p class="field-error">
+                                {{ error }}
+                            </p>
+                        {% endfor %}
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="form-section">
+
+                <div class="section-title">
+                    <h2>Endereço</h2>
+                    <p>Informe a localização do cliente.</p>
+                </div>
+
+                <div class="form-grid">
+
+                    <div class="form-group">
+
+                        <label for="{{ form.city.id_for_label }}">
+                            Cidade
+                        </label>
+
+                        {{ form.city }}
+
+                        {% for error in form.city.errors %}
+                            <p class="field-error">
+                                {{ error }}
+                            </p>
+                        {% endfor %}
+
+                    </div>
+
+                    <div class="form-group">
+
+                        <label for="{{ form.postal_code.id_for_label }}">
+                            Código Postal
+                        </label>
+
+                        {{ form.postal_code }}
+
+                        {% for error in form.postal_code.errors %}
+                            <p class="field-error">
+                                {{ error }}
+                            </p>
+                        {% endfor %}
+
+                    </div>
+
+                    <div class="form-group">
+
+                        <label for="{{ form.street.id_for_label }}">
+                            Rua
+                        </label>
+
+                        {{ form.street }}
+
+                        {% for error in form.street.errors %}
+                            <p class="field-error">
+                                {{ error }}
+                            </p>
+                        {% endfor %}
+
+                    </div>
+
+                    <div class="form-group">
+
+                        <label for="{{ form.number.id_for_label }}">
+                            Número
+                        </label>
+
+                        {{ form.number }}
+
+                        {% for error in form.number.errors %}
+                            <p class="field-error">
+                                {{ error }}
+                            </p>
+                        {% endfor %}
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="form-actions">
+
+                {% if customer %}
+
+                    <a
+                        href="{% url 'customer:customer_detail' customer.pk %}"
+                        class="btn-cancel"
+                    >
+                        Cancelar
+                    </a>
+
+                {% else %}
+
+                    <a
+                        href="{% url 'customer:customer_list' %}"
+                        class="btn-cancel"
+                    >
+                        Cancelar
+                    </a>
+
+                {% endif %}
+
+                <button
+                    type="submit"
+                    class="btn-save"
+                >
+                    {% if customer %}
+                        Salvar Alterações
+                    {% else %}
+                        Salvar Cliente
+                    {% endif %}
+                </button>
+
+            </div>
+
+        </div>
+
+    </form>
+
+</div>
+{% endblock %}

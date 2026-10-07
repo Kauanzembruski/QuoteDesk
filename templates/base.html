@@ -48,11 +48,9 @@
             min-height: 100vh;
 
             background:
-                linear-gradient(
-                    180deg,
+                linear-gradient(180deg,
                     #0a2747 0%,
-                    #071d35 100%
-                );
+                    #071d35 100%);
 
             color: white;
 
@@ -196,11 +194,9 @@
 
         .nav-link.active {
             background:
-                linear-gradient(
-                    90deg,
+                linear-gradient(90deg,
                     #0876d8,
-                    #0d8df0
-                );
+                    #0d8df0);
 
             color: white;
         }
@@ -360,186 +356,160 @@
 
 <body>
 
-<div class="app-layout">
+    <div class="app-layout">
 
-    <!-- SIDEBAR -->
-    <aside class="sidebar">
+        <!-- SIDEBAR -->
+        <aside class="sidebar">
 
-        <div class="sidebar-brand">
+            <div class="sidebar-brand">
 
-            <img
-                src="{% static 'img/favicon.png' %}"
-                alt="QuoteDesk"
-            >
+                <img src="{% static 'img/favicon.png' %}" alt="QuoteDesk">
 
-            <div class="sidebar-brand-name">
-                Quote<span>Desk</span>
-            </div>
-
-        </div>
-
-
-        <nav class="sidebar-nav">
-
-            <a href="#" class="nav-link active">
-
-                <svg
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                >
-                    <rect x="3" y="3" width="7" height="7"></rect>
-                    <rect x="14" y="3" width="7" height="7"></rect>
-                    <rect x="3" y="14" width="7" height="7"></rect>
-                    <rect x="14" y="14" width="7" height="7"></rect>
-                </svg>
-
-                <span>Dashboard</span>
-
-            </a>
-
-
-            <a href="#" class="nav-link">
-
-                <svg
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                >
-                    <circle cx="12" cy="7" r="4"></circle>
-                    <path d="M5 21v-2a7 7 0 0 1 14 0v2"></path>
-                </svg>
-
-                <span>Clientes</span>
-
-            </a>
-
-
-            <a href="#" class="nav-link">
-
-                <svg
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                >
-                    <path d="M12 2 3 7l9 5 9-5-9-5Z"></path>
-                    <path d="m3 12 9 5 9-5"></path>
-                    <path d="m3 17 9 5 9-5"></path>
-                </svg>
-
-                <span>Catálogo</span>
-
-            </a>
-
-
-            <a href="#" class="nav-link">
-
-                <svg
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                >
-                    <path d="M6 2h9l5 5v15H6Z"></path>
-                    <path d="M14 2v6h6"></path>
-                    <path d="M9 13h6"></path>
-                    <path d="M9 17h6"></path>
-                </svg>
-
-                <span>Orçamentos</span>
-
-            </a>
-
-        </nav>
-
-
-        <!-- ONDA EXTRA -->
-        <div class="sidebar-wave"></div>
-
-
-        <div class="sidebar-footer">
-
-            <a href="#" class="logout-link">
-
-                <svg
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                >
-                    <path d="M10 17l5-5-5-5"></path>
-                    <path d="M15 12H3"></path>
-                    <path d="M21 19V5a2 2 0 0 0-2-2h-6"></path>
-                </svg>
-
-                <span>Sair</span>
-
-            </a>
-
-        </div>
-
-    </aside>
-
-
-    <!-- MAIN -->
-    <main class="main">
-
-        <header class="topbar">
-
-            <div class="topbar-title">
-                QuoteDesk
-            </div>
-
-            <div class="user-info">
-
-                {% if request.user.photo %}
-
-                    <img
-                        class="user-avatar"
-                        src="{{ request.user.photo.url }}"
-                        alt="{{ request.user.username }}"
-                    >
-
-                {% else %}
-
-                    <div class="user-avatar"></div>
-
-                {% endif %}
-
-                <div class="user-text">
-
-                    <span class="user-name">
-                        {{ request.user.get_full_name|default:request.user.username }}
-                    </span>
-
-                    <span class="user-role">
-                        {{ request.user.get_role_display }}
-                    </span>
-
+                <div class="sidebar-brand-name">
+                    Quote<span>Desk</span>
                 </div>
 
             </div>
 
-        </header>
+
+            <nav class="sidebar-nav">
+
+                <!-- DASHBOARD -->
+                <a href="{% url 'dashboard:dashboard' %}"
+                    class="nav-link {% if request.resolver_match.app_name == 'dashboard' %}active{% endif %}">
+
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="3" y="3" width="7" height="7"></rect>
+                        <rect x="14" y="3" width="7" height="7"></rect>
+                        <rect x="3" y="14" width="7" height="7"></rect>
+                        <rect x="14" y="14" width="7" height="7"></rect>
+                    </svg>
+
+                    <span>Dashboard</span>
+
+                </a>
 
 
-        <section class="content">
+                <!-- CLIENTES -->
+                <a href="{% url 'customer:customer_list' %}"
+                    class="nav-link {% if request.resolver_match.app_name == 'customer' %}active{% endif %}">
 
-            {% block content %}
-            {% endblock %}
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="7" r="4"></circle>
+                        <path d="M5 21v-2a7 7 0 0 1 14 0v2"></path>
+                    </svg>
 
-        </section>
+                    <span>Clientes</span>
 
-    </main>
-
-</div>
+                </a>
 
 
-{% block extra_js %}
-{% endblock %}
+                <!-- CATÁLOGO -->
+                <a href="{% url 'catalog:catalog_hub' %}" class="nav-link {% if request.resolver_match.app_name == 'catalog' %}active{% endif %}">
+
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 2 3 7l9 5 9-5-9-5Z"></path>
+                        <path d="m3 12 9 5 9-5"></path>
+                        <path d="m3 17 9 5 9-5"></path>
+                    </svg>
+
+                    <span>Catálogo</span>
+
+                </a>
+
+
+                <!-- ORÇAMENTOS -->
+                <a href="#" class="nav-link {% if request.resolver_match.app_name == 'quote' %}active{% endif %}">
+
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M6 2h9l5 5v15H6Z"></path>
+                        <path d="M14 2v6h6"></path>
+                        <path d="M9 13h6"></path>
+                        <path d="M9 17h6"></path>
+                    </svg>
+
+                    <span>Orçamentos</span>
+
+                </a>
+
+            </nav>
+
+
+            <!-- ONDA EXTRA -->
+            <div class="sidebar-wave"></div>
+
+
+            <div class="sidebar-footer">
+
+                <a href="#" class="logout-link">
+
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M10 17l5-5-5-5"></path>
+                        <path d="M15 12H3"></path>
+                        <path d="M21 19V5a2 2 0 0 0-2-2h-6"></path>
+                    </svg>
+
+                    <span>Sair</span>
+
+                </a>
+
+            </div>
+
+        </aside>
+
+
+        <!-- MAIN -->
+        <main class="main">
+
+            <header class="topbar">
+
+                <div class="topbar-title">
+                    QuoteDesk
+                </div>
+
+                <div class="user-info">
+
+                    {% if request.user.photo %}
+
+                    <img class="user-avatar" src="{{ request.user.photo.url }}" alt="{{ request.user.username }}">
+
+                    {% else %}
+
+                    <div class="user-avatar"></div>
+
+                    {% endif %}
+
+                    <div class="user-text">
+
+                        <span class="user-name">
+                            {{ request.user.get_full_name|default:request.user.username }}
+                        </span>
+
+                        <span class="user-role">
+                            {{ request.user.get_role_display }}
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </header>
+
+
+            <section class="content">
+
+                {% block content %}
+                {% endblock %}
+
+            </section>
+
+        </main>
+
+    </div>
+
+
+    {% block extra_js %}
+    {% endblock %}
 
 </body>
 

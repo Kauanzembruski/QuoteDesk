@@ -1,0 +1,367 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+Catálogo | QuoteDesk
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .catalog-page {
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .breadcrumb {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 18px;
+
+        font-size: 14px;
+        color: #7b8fa4;
+    }
+
+    .breadcrumb a {
+        color: #7b8fa4;
+        text-decoration: none;
+    }
+
+    .breadcrumb a:hover {
+        color: #0d8df0;
+    }
+
+    .breadcrumb strong {
+        color: #102b4c;
+    }
+
+    .page-header {
+        margin-bottom: 30px;
+    }
+
+    .page-header h1 {
+        margin: 0 0 7px;
+
+        font-size: 36px;
+        color: #0b2545;
+    }
+
+    .page-header p {
+        margin: 0;
+
+        color: #718399;
+        font-size: 14px;
+    }
+
+    .catalog-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+
+        gap: 22px;
+    }
+
+    .catalog-card {
+        min-height: 210px;
+
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+
+        padding: 26px;
+
+        background: #ffffff;
+
+        border: 1px solid #d9e4ee;
+        border-radius: 16px;
+
+        text-decoration: none;
+
+        box-shadow:
+            0 8px 22px rgba(21, 52, 82, 0.05),
+            0 2px 6px rgba(21, 52, 82, 0.03);
+
+        transition: .2s ease;
+    }
+
+    .catalog-card:hover {
+        transform: translateY(-3px);
+
+        border-color: #b9d9f5;
+
+        box-shadow:
+            0 14px 30px rgba(21, 52, 82, 0.09);
+    }
+
+    .catalog-icon {
+        width: 58px;
+        height: 58px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        border-radius: 14px;
+
+        background: #eaf4ff;
+
+        overflow: hidden;
+    }
+
+    .catalog-icon img {
+        width: 100%;
+        height: 100%;
+
+        object-fit: cover;
+
+        border-radius: 14px;
+    }
+
+    .catalog-card-content {
+        margin-top: 28px;
+    }
+
+    .catalog-card-content h2 {
+        margin: 0 0 8px;
+
+        color: #102b4c;
+
+        font-size: 19px;
+        font-weight: 700;
+    }
+
+    .catalog-card-content p {
+        margin: 0;
+
+        color: #718399;
+
+        font-size: 13px;
+        line-height: 1.5;
+    }
+
+    .catalog-card-footer {
+        margin-top: 24px;
+
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        color: #0d8df0;
+
+        font-size: 13px;
+        font-weight: 700;
+    }
+
+    .catalog-card-footer svg {
+        width: 18px;
+        height: 18px;
+
+        transition: .2s ease;
+    }
+
+    .catalog-card:hover .catalog-card-footer svg {
+        transform: translateX(3px);
+    }
+
+    @media (max-width: 950px) {
+        .catalog-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+
+    @media (max-width: 650px) {
+        .catalog-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .catalog-card {
+            min-height: 180px;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="catalog-page">
+
+    <div class="breadcrumb">
+        <a href="{% url 'dashboard:dashboard' %}">
+            Dashboard
+        </a>
+
+        <span>›</span>
+
+        <strong>
+            Catálogo
+        </strong>
+    </div>
+
+    <div class="page-header">
+        <h1>Catálogo</h1>
+
+        <p>
+            Gerencie os produtos e opções disponíveis para os orçamentos.
+        </p>
+    </div>
+
+    <div class="catalog-grid">
+
+        <!-- PISCINAS -->
+        <a href="#" class="catalog-card">
+
+            <div class="catalog-icon">
+                <img src="{% static 'img/PoolIcon.png' %}" alt="IconPool">
+            </div>
+
+            <div class="catalog-card-content">
+                <h2>Piscinas</h2>
+
+                <p>
+                    Modelos, medidas, preços e disponibilidade das piscinas.
+                </p>
+            </div>
+
+            <div class="catalog-card-footer">
+                <span>Gerenciar piscinas</span>
+
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M5 12h14"></path>
+                    <path d="m13 6 6 6-6 6"></path>
+                </svg>
+            </div>
+
+        </a>
+
+
+        <!-- AQUECIMENTO -->
+        <a href="#" class="catalog-card">
+
+            <div class="catalog-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="4"></circle>
+                    <path d="M12 2v2"></path>
+                    <path d="M12 20v2"></path>
+                    <path d="m4.93 4.93 1.41 1.41"></path>
+                    <path d="m17.66 17.66 1.41 1.41"></path>
+                    <path d="M2 12h2"></path>
+                    <path d="M20 12h2"></path>
+                    <path d="m6.34 17.66-1.41 1.41"></path>
+                    <path d="m19.07 4.93-1.41 1.41"></path>
+                </svg>
+            </div>
+
+            <div class="catalog-card-content">
+                <h2>Aquecimento</h2>
+
+                <p>
+                    Opções de aquecimento solar e trocadores de calor.
+                </p>
+            </div>
+
+            <div class="catalog-card-footer">
+                <span>Gerenciar aquecimento</span>
+
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M5 12h14"></path>
+                    <path d="m13 6 6 6-6 6"></path>
+                </svg>
+            </div>
+
+        </a>
+
+
+        <!-- ILUMINAÇÃO -->
+        <a href="#" class="catalog-card">
+
+            <div class="catalog-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M9 18h6"></path>
+                    <path d="M10 22h4"></path>
+                    <path d="M8.5 14.5A6 6 0 1 1 15.5 14.5C14.6 15.2 14 16.1 14 17h-4c0-.9-.6-1.8-1.5-2.5Z"></path>
+                </svg>
+            </div>
+
+            <div class="catalog-card-content">
+                <h2>Iluminação</h2>
+
+                <p>
+                    Valor unitário dos pontos de iluminação LED.
+                </p>
+            </div>
+
+            <div class="catalog-card-footer">
+                <span>Gerenciar iluminação</span>
+
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M5 12h14"></path>
+                    <path d="m13 6 6 6-6 6"></path>
+                </svg>
+            </div>
+
+        </a>
+
+
+        <!-- CASCATAS -->
+        <a href="#" class="catalog-card">
+
+            <div class="catalog-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M5 3h10a4 4 0 0 1 4 4v2"></path>
+                    <path d="M19 9v3"></path>
+                    <path d="M16 15c0 2 1.3 3 3 3s3-1 3-3"></path>
+                    <path d="M3 21h18"></path>
+                </svg>
+            </div>
+
+            <div class="catalog-card-content">
+                <h2>Cascatas</h2>
+
+                <p>
+                    Modelos e preços das cascatas disponíveis.
+                </p>
+            </div>
+
+            <div class="catalog-card-footer">
+                <span>Gerenciar cascatas</span>
+
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M5 12h14"></path>
+                    <path d="m13 6 6 6-6 6"></path>
+                </svg>
+            </div>
+
+        </a>
+
+
+        <!-- TRATAMENTO DA ÁGUA -->
+        <a href="#" class="catalog-card">
+
+            <div class="catalog-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M12 2s6 6.2 6 12a6 6 0 0 1-12 0c0-5.8 6-12 6-12Z"></path>
+                    <path d="M9 14c.7 1.3 1.7 2 3 2"></path>
+                </svg>
+            </div>
+
+            <div class="catalog-card-content">
+                <h2>Tratamento da Água</h2>
+
+                <p>
+                    Opções de tratamento com cloro ou ozônio.
+                </p>
+            </div>
+
+            <div class="catalog-card-footer">
+                <span>Gerenciar tratamento</span>
+
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M5 12h14"></path>
+                    <path d="m13 6 6 6-6 6"></path>
+                </svg>
+            </div>
+
+        </a>
+
+    </div>
+
+</div>
+{% endblock %}

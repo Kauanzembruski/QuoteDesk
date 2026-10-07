@@ -24,19 +24,27 @@ class Customer(models.Model):
 
     neighborhood = models.CharField(
         max_length=100,
+        null=True,
+        blank=True,
     )
 
 
     street = models.CharField(
         max_length=200,
+        null=True,
+        blank=True,
     )
 
     number  = models.CharField(
         max_length=15,
+        null=True,
+        blank=True,
     )
 
     postal_code = models.CharField(
         max_length=9,
+        null=True,
+        blank=True,
     )
 
     created_at = models.DateTimeField(

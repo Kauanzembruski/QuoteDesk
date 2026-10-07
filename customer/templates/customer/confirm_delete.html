@@ -1,0 +1,367 @@
+{% extends "base.html" %}
+
+{% block title %}
+Excluir Cliente | QuoteDesk
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .delete-page {
+        max-width: 720px;
+        margin: 0 auto;
+    }
+
+    .breadcrumb {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 18px;
+
+        font-size: 14px;
+        color: #7b8fa4;
+    }
+
+    .breadcrumb a {
+        color: #7b8fa4;
+        text-decoration: none;
+    }
+
+    .breadcrumb a:hover {
+        color: #0d8df0;
+    }
+
+    .breadcrumb strong {
+        color: #102b4c;
+    }
+
+    .page-header {
+        margin-bottom: 28px;
+    }
+
+    .page-header h1 {
+        margin: 0 0 7px;
+
+        font-size: 34px;
+        color: #0b2545;
+    }
+
+    .page-header p {
+        margin: 0;
+
+        color: #718399;
+        font-size: 14px;
+    }
+
+    .delete-card {
+        background: #ffffff;
+
+        border: 1px solid #e7d8d6;
+        border-radius: 16px;
+
+        overflow: hidden;
+
+        box-shadow:
+            0 12px 30px rgba(21, 52, 82, 0.06),
+            0 2px 8px rgba(21, 52, 82, 0.04);
+    }
+
+    .delete-content {
+        padding: 34px;
+        text-align: center;
+    }
+
+    .delete-icon {
+        width: 68px;
+        height: 68px;
+
+        margin: 0 auto 22px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        border-radius: 50%;
+
+        background: #fff1f0;
+        color: #d93025;
+    }
+
+    .delete-icon svg {
+        width: 32px;
+        height: 32px;
+    }
+
+    .delete-content h2 {
+        margin: 0 0 12px;
+
+        color: #102b4c;
+
+        font-size: 22px;
+    }
+
+    .delete-content p {
+        margin: 0;
+
+        color: #718399;
+
+        font-size: 14px;
+        line-height: 1.6;
+    }
+
+    .customer-box {
+        margin-top: 26px;
+        padding: 18px 20px;
+
+        border: 1px solid #e1e9f0;
+        border-radius: 12px;
+
+        background: #f8fafc;
+
+        text-align: left;
+    }
+
+    .customer-box span {
+        display: block;
+
+        margin-bottom: 5px;
+
+        color: #7b8fa4;
+
+        font-size: 12px;
+        font-weight: 700;
+
+        text-transform: uppercase;
+        letter-spacing: .4px;
+    }
+
+    .customer-box strong {
+        display: block;
+
+        color: #102b4c;
+
+        font-size: 16px;
+    }
+
+    .customer-box small {
+        display: block;
+
+        margin-top: 5px;
+
+        color: #718399;
+
+        font-size: 13px;
+    }
+
+    .warning-text {
+        margin-top: 24px !important;
+
+        color: #b42318 !important;
+
+        font-size: 13px !important;
+        font-weight: 600;
+    }
+
+    .delete-actions {
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        gap: 12px;
+
+        padding: 20px 28px;
+
+        background: #f8fafc;
+
+        border-top: 1px solid #e5edf4;
+    }
+
+    .btn-cancel {
+        height: 44px;
+
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+
+        padding: 0 18px;
+
+        border: 1px solid #cfdbe7;
+        border-radius: 9px;
+
+        background: #ffffff;
+
+        color: #40556c;
+
+        text-decoration: none;
+        font-size: 14px;
+        font-weight: 600;
+
+        transition: .2s ease;
+    }
+
+    .btn-cancel:hover {
+        background: #f4f7fa;
+        border-color: #b9c8d6;
+    }
+
+    .btn-delete {
+        height: 44px;
+
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+
+        padding: 0 20px;
+
+        border: none;
+        border-radius: 9px;
+
+        background: #d93025;
+
+        color: #ffffff;
+
+        font-size: 14px;
+        font-weight: 700;
+
+        cursor: pointer;
+
+        transition: .2s ease;
+
+        box-shadow:
+            0 7px 18px rgba(217, 48, 37, .18);
+    }
+
+    .btn-delete:hover {
+        background: #b42318;
+
+        transform: translateY(-1px);
+
+        box-shadow:
+            0 10px 24px rgba(217, 48, 37, .24);
+    }
+
+    @media (max-width: 700px) {
+        .delete-actions {
+            flex-direction: column-reverse;
+        }
+
+        .btn-cancel,
+        .btn-delete {
+            width: 100%;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="delete-page">
+
+    <div class="breadcrumb">
+
+        <a href="{% url 'dashboard:dashboard' %}">
+            Dashboard
+        </a>
+
+        <span>›</span>
+
+        <a href="{% url 'customer:customer_list' %}">
+            Clientes
+        </a>
+
+        <span>›</span>
+
+        <a href="{% url 'customer:customer_detail' customer.pk %}">
+            {{ customer.name }}
+        </a>
+
+        <span>›</span>
+
+        <strong>Excluir</strong>
+
+    </div>
+
+    <div class="page-header">
+
+        <h1>Excluir Cliente</h1>
+
+        <p>
+            Confirme a exclusão do cliente cadastrado.
+        </p>
+
+    </div>
+
+    <div class="delete-card">
+
+        <div class="delete-content">
+
+            <div class="delete-icon">
+
+                <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                >
+                    <path d="M3 6h18"></path>
+                    <path d="M8 6V4h8v2"></path>
+                    <path d="M19 6l-1 14H6L5 6"></path>
+                    <path d="M10 11v5"></path>
+                    <path d="M14 11v5"></path>
+                </svg>
+
+            </div>
+
+            <h2>
+                Tem certeza que deseja excluir este cliente?
+            </h2>
+
+            <p>
+                Revise as informações abaixo antes de confirmar.
+            </p>
+
+            <div class="customer-box">
+
+                <span>Cliente</span>
+
+                <strong>
+                    {{ customer.name }}
+                </strong>
+
+                <small>
+                    {{ customer.document }}
+                </small>
+
+            </div>
+
+            <p class="warning-text">
+                Esta ação não poderá ser desfeita.
+            </p>
+
+        </div>
+
+        <form method="post">
+
+            {% csrf_token %}
+
+            <div class="delete-actions">
+
+                <a
+                    href="{% url 'customer:customer_list'%}"
+                    class="btn-cancel"
+                >
+                    Cancelar
+                </a>
+
+                <button
+                    type="submit"
+                    class="btn-delete"
+                >
+                    Excluir Cliente
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+{% endblock %}
