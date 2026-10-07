@@ -327,7 +327,10 @@ http://127.0.0.1:8000/
 
 ## 📷 Screenshots
 
-> Screenshots will be added as the main workflows are completed.
+<img width="1872" height="974" alt="image" src="https://github.com/user-attachments/assets/f1c1e684-9445-46e9-a40c-15ac0f295dbf" />
+<img width="1872" height="973" alt="image" src="https://github.com/user-attachments/assets/f38fc2fb-3f6a-48d4-8d2d-9385b4e97137" />
+
+
 
 Planned sections:
 
