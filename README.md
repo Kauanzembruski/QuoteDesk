@@ -1,16 +1,53 @@
 # QuoteDesk
 
-A web-based quotation management system built with **Python and Django**, designed around the real workflow of a swimming pool retailer.
+<p align="center">
+  <img src="static/img/login.png" alt="QuoteDesk Logo" width="220">
+</p>
 
-QuoteDesk centralizes customers, product catalog, configurable pool options, pricing and sales quotations in a single application.
+<p align="center">
+  A web-based quotation management system built with <strong>Python and Django</strong>,
+  designed around the real workflow of a swimming pool retailer.
+</p>
 
-The project focuses on **backend development, relational modeling, authentication, authorization and real business rules**.
+<p align="center">
+  <img src="https://img.shields.io/badge/Python-3.8+-3776AB?style=for-the-badge&logo=python&logoColor=white">
+  <img src="https://img.shields.io/badge/Django-4.2-092E20?style=for-the-badge&logo=django&logoColor=white">
+  <img src="https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white">
+  <img src="https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white">
+  <img src="https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black">
+</p>
+
+<p align="center">
+  <img src="https://img.shields.io/badge/Status-In%20Development-0D8DF0?style=flat-square">
+  <img src="https://img.shields.io/badge/Architecture-Modular%20Django-0B2545?style=flat-square">
+  <img src="https://img.shields.io/badge/Focus-Backend%20Engineering-6C63FF?style=flat-square">
+</p>
 
 ---
 
-## Tech Stack
+## 🚀 About the Project
+
+QuoteDesk centralizes customers, product catalog, configurable pool options, pricing and sales quotations in a single application.
+
+The project focuses on:
+
+- Backend development
+- Relational database modeling
+- Authentication and authorization
+- Business-rule implementation
+- Historical pricing
+- Modular Django architecture
+
+---
+
+## 🛠 Tech Stack
 
 ### Backend
+
+<p>
+  <img src="https://skillicons.dev/icons?i=python,django" />
+</p>
+
 - Python
 - Django 4.2
 - Django ORM
@@ -18,27 +55,43 @@ The project focuses on **backend development, relational modeling, authenticatio
 - Custom `AbstractUser`
 
 ### Database
+
+<p>
+  <img src="https://skillicons.dev/icons?i=sqlite,postgres" />
+</p>
+
 - Relational data modeling
 - Foreign keys
 - Database constraints
 - `DecimalField` for financial values
-- SQLite during development
+- SQLite in development
 - PostgreSQL planned for production
 
 ### Frontend
+
+<p>
+  <img src="https://skillicons.dev/icons?i=html,css,js" />
+</p>
+
 - HTML5
 - CSS3
 - JavaScript
 - Django Templates
 
 ### Tools
+
+<p>
+  <img src="https://skillicons.dev/icons?i=git,github,vscode" />
+</p>
+
 - Git
 - GitHub
 - Pillow
+- Virtual environments
 
 ---
 
-## Main Features
+## ✨ Main Features
 
 - Custom authentication
 - User roles: `ADMIN` and `SELLER`
@@ -51,20 +104,18 @@ The project focuses on **backend development, relational modeling, authenticatio
 - Sales quotations
 - Quotation status workflow
 - Historical price preservation
-- Administrative dashboard structure
+- Administrative dashboard
 
 ---
 
-## Business Rules
+## 🧠 Key Business Rule
 
-### Historical pricing
+### Historical Pricing
 
-Catalog prices can change, but existing quotations must keep the original values.
-
-Example:
+Catalog prices may change, but existing quotations must keep the original values.
 
 ```text
-Pool price when quotation was created:
+Quotation pool price:
 R$ 18,000
 
 Current catalog price:
@@ -88,29 +139,27 @@ water_treatment_price
 total_price
 ```
 
-This protects the history of commercial proposals.
+This preserves the integrity of historical commercial proposals.
 
 ---
 
-### Seller ownership
-
-Each quotation is associated with the user who created it.
-
-Planned access rules:
+## 🔐 Access Control
 
 ```text
 ADMIN
 → full access
 
 SELLER
-→ create customers
+→ customer management
 → create quotations
 → access only their own quotations
 ```
 
+This introduces both role-based authorization and object-level access rules.
+
 ---
 
-## Domain Model
+## 🧩 Domain Model
 
 ```text
 User
@@ -127,13 +176,9 @@ Quote
  └── WaterTreatment
 ```
 
-A customer can have multiple quotations.
-
-A seller can create multiple quotations.
-
 ---
 
-## Quotation Calculation
+## 🧮 Quotation Calculation
 
 ```text
 Pool
@@ -149,7 +194,7 @@ Financial values use `DecimalField` to avoid floating-point precision issues.
 
 ---
 
-## Project Structure
+## 🗂 Project Structure
 
 ```text
 QuoteDesk/
@@ -165,8 +210,6 @@ QuoteDesk/
 └── requirements.txt
 ```
 
-Each Django app has a clear responsibility:
-
 ```text
 accounts  → authentication and users
 customer  → customer data
@@ -177,7 +220,7 @@ dashboard → business overview
 
 ---
 
-## Current Status
+## 📌 Development Status
 
 🚧 **In active development**
 
@@ -217,7 +260,7 @@ dashboard → business overview
 
 ---
 
-## Skills Demonstrated
+## 💼 Skills Demonstrated
 
 - Python backend development
 - Django architecture
@@ -233,14 +276,12 @@ dashboard → business overview
 
 ---
 
-## Getting Started
+## ⚙️ Getting Started
 
 ```bash
 git clone https://github.com/Kauanzembruski/QuoteDesk.git
 cd QuoteDesk
 ```
-
-Create and activate a virtual environment:
 
 ```bash
 python -m venv venv
@@ -270,7 +311,7 @@ Create an administrator:
 python manage.py createsuperuser
 ```
 
-Run:
+Run the project:
 
 ```bash
 python manage.py runserver
@@ -284,15 +325,22 @@ http://127.0.0.1:8000/
 
 ---
 
-## About the Project
+## 📷 Screenshots
 
-QuoteDesk is based on a **real business workflow**, not a generic tutorial CRUD project.
+> Screenshots will be added as the main workflows are completed.
 
-The goal is to build a maintainable commercial system while applying backend concepts commonly required in real-world Django applications.
+Planned sections:
+
+- Login
+- Dashboard
+- Customer Management
+- Catalog
+- Quotation Creation
+- Quotation Preview
 
 ---
 
-## Author
+## 👨‍💻 Author
 
 **Kauan Zembruski**
 
