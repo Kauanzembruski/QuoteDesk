@@ -280,8 +280,58 @@
         .user-info {
             display: flex;
             align-items: center;
-
             gap: 12px;
+        }
+
+        .user-avatar,
+        .user-avatar-placeholder {
+            width: 52px;
+            height: 52px;
+
+            border-radius: 50%;
+
+            flex-shrink: 0;
+        }
+
+        .user-avatar {
+            object-fit: cover;
+            border: 1px solid #d9e4ee;
+        }
+
+        .user-avatar-placeholder {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            background: #eaf3fb;
+
+            color: #0b2545;
+
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .user-text {
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+        }
+
+        .user-text strong {
+            color: #0b2545;
+
+            font-size: 16px;
+            font-weight: 700;
+
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .user-text span {
+            color: #718399;
+
+            font-size: 14px;
         }
 
         .user-avatar {
@@ -316,6 +366,102 @@
 
         .content {
             padding: 32px;
+        }
+
+
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar-nav {
+            flex: 1;
+        }
+
+        .sidebar-user {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+
+            padding: 16px;
+
+            margin-top: auto;
+
+            border-top: 1px solid rgba(255, 255, 255, .12);
+        }
+
+        .sidebar-user-photo,
+        .sidebar-user-placeholder {
+            width: 44px;
+            height: 44px;
+
+            border-radius: 50%;
+
+            flex-shrink: 0;
+        }
+
+        .sidebar-user-photo {
+            object-fit: cover;
+        }
+
+        .sidebar-user-placeholder {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            background: rgba(255, 255, 255, .12);
+
+            color: #ffffff;
+
+            font-size: 16px;
+            font-weight: 700;
+        }
+
+        .sidebar-user-info {
+            display: flex;
+            flex-direction: column;
+
+            min-width: 0;
+        }
+
+        .sidebar-user-info strong {
+            color: #ffffff;
+
+            font-size: 13px;
+
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .sidebar-user-info span {
+            margin-top: 2px;
+
+            color: rgba(255, 255, 255, .65);
+
+            font-size: 11px;
+        }
+
+        .sidebar-logout {
+            display: flex;
+            align-items: center;
+
+            padding: 13px 16px;
+
+            margin: 0 12px 14px;
+
+            border-radius: 9px;
+
+            color: #ffffff;
+
+            text-decoration: none;
+
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .sidebar-logout:hover {
+            background: rgba(255, 255, 255, .08);
         }
 
         /* =========================
@@ -419,7 +565,8 @@
 
 
                 <!-- ORÇAMENTOS -->
-                <a href="{% url 'quote:quote_create'%}" class="nav-link {% if request.resolver_match.app_name == 'quote' %}active{% endif %}">
+                <a href="{% url 'quote:quote_list'%}"
+                    class="nav-link {% if request.resolver_match.app_name == 'quote' %}active{% endif %}">
 
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M6 2h9l5 5v15H6Z"></path>
@@ -441,7 +588,35 @@
 
             <div class="sidebar-footer">
 
-                <a href="#" class="logout-link">
+                <div class="sidebar-user">
+
+                    {% if request.user.photo %}
+                    <img src="{{ request.user.photo.url }}"
+                        alt="{{ request.user.get_full_name|default:request.user.username }}" class="sidebar-user-photo">
+                    {% else %}
+                    <div class="sidebar-user-placeholder">
+                        {{ request.user.username|first|upper }}
+                    </div>
+                    {% endif %}
+
+                    <div class="sidebar-user-info">
+
+                        <strong>
+                            {% if request.user.get_full_name %}
+                            {{ request.user.get_full_name }}
+                            {% else %}
+                            {{ request.user.username }}
+                            {% endif %}
+                        </strong>
+
+                        <span>
+                            {{ request.user.get_role_display }}
+                        </span>
+
+                    </div>
+
+                </div>
+                <a href="{% url 'accounts:logout' %}" class="logout-link">
 
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M10 17l5-5-5-5"></path>
@@ -461,39 +636,7 @@
         <!-- MAIN -->
         <main class="main">
 
-            <header class="topbar">
 
-                <div class="topbar-title">
-                    QuoteDesk
-                </div>
-
-                <div class="user-info">
-
-                    {% if request.user.photo %}
-
-                    <img class="user-avatar" src="{{ request.user.photo.url }}" alt="{{ request.user.username }}">
-
-                    {% else %}
-
-                    <div class="user-avatar"></div>
-
-                    {% endif %}
-
-                    <div class="user-text">
-
-                        <span class="user-name">
-                            {{ request.user.get_full_name|default:request.user.username }}
-                        </span>
-
-                        <span class="user-role">
-                            {{ request.user.get_role_display }}
-                        </span>
-
-                    </div>
-
-                </div>
-
-            </header>
 
 
             <section class="content">

@@ -1,6 +1,9 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, get_object_or_404
 
+from dashboard.models import ActivityLog
+from dashboard.utils import log_activity
+
 from catalog.models import Lighting
 
 
@@ -42,5 +45,12 @@ def lighting_update(request, pk):
     if request.method == "POST":
         lighting.price = request.POST.get("price")
         lighting.save()
+        log_activity(
+            request.user,
+            ActivityLog.Type.CATALOG_UPDATED,
+            "Preço da iluminação atualizado",
+            str(lighting),
+            lighting.pk,
+        )
 
     return redirect("catalog:lighting_detail")

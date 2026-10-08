@@ -2,6 +2,9 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, redirect, render
 
 
+from dashboard.models import ActivityLog
+from dashboard.utils import log_activity
+
 from catalog.models import WaterTreatment
 
 
@@ -45,6 +48,13 @@ def treatment_update(request, pk):
 
         treatment.price = price
         treatment.save()
+        log_activity(
+            request.user,
+            ActivityLog.Type.CATALOG_UPDATED,
+            "Preço do tratamento atualizado",
+            str(treatment),
+            treatment.pk,
+        )
 
         return redirect(
             "catalog:treatment_detail"

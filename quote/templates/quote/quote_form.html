@@ -7,7 +7,6 @@ Novo Orçamento | QuoteDesk
 
 {% block extra_css %}
 <style>
-
     .quote-page {
         max-width: 1180px;
         margin: 0 auto;
@@ -253,11 +252,9 @@ Novo Orçamento | QuoteDesk
         border: none;
         border-radius: 9px;
 
-        background: linear-gradient(
-            90deg,
-            #0876d8,
-            #0d8df0
-        );
+        background: linear-gradient(90deg,
+                #0876d8,
+                #0d8df0);
 
         color: white;
 
@@ -358,7 +355,6 @@ Novo Orçamento | QuoteDesk
         }
 
     }
-
 </style>
 {% endblock %}
 
@@ -368,7 +364,7 @@ Novo Orçamento | QuoteDesk
 
 <div class="quote-page">
 
-    <a href="#" class="back-link">
+    <a href="{% url 'quote:quote_list' %}" class="back-link">
         ← Voltar para Orçamentos
     </a>
 
@@ -376,7 +372,11 @@ Novo Orçamento | QuoteDesk
     <div class="page-header">
 
         <h1>
+            {% if is_editing %}
+            Editar Orçamento #{{ quote.pk }}
+            {% else %}
             Criar Orçamento
+            {% endif %}
         </h1>
 
         <p>
@@ -449,9 +449,9 @@ Novo Orçamento | QuoteDesk
                         {{ form.customer }}
 
                         {% for error in form.customer.errors %}
-                            <small style="color:#d93025;">
-                                {{ error }}
-                            </small>
+                        <small style="color:#d93025;">
+                            {{ error }}
+                        </small>
                         {% endfor %}
 
                     </div>
@@ -461,11 +461,7 @@ Novo Orçamento | QuoteDesk
 
                         <span></span>
 
-                        <button
-                            type="button"
-                            class="btn-next"
-                            onclick="nextStep()"
-                        >
+                        <button type="button" class="btn-next" onclick="nextStep()">
                             Próximo →
                         </button>
 
@@ -505,19 +501,11 @@ Novo Orçamento | QuoteDesk
 
                     <div class="stage-actions">
 
-                        <button
-                            type="button"
-                            class="btn-back"
-                            onclick="previousStep()"
-                        >
+                        <button type="button" class="btn-back" onclick="previousStep()">
                             ← Voltar
                         </button>
 
-                        <button
-                            type="button"
-                            class="btn-next"
-                            onclick="nextStep()"
-                        >
+                        <button type="button" class="btn-next" onclick="nextStep()">
                             Próximo →
                         </button>
 
@@ -594,19 +582,11 @@ Novo Orçamento | QuoteDesk
 
                     <div class="stage-actions">
 
-                        <button
-                            type="button"
-                            class="btn-back"
-                            onclick="previousStep()"
-                        >
+                        <button type="button" class="btn-back" onclick="previousStep()">
                             ← Voltar
                         </button>
 
-                        <button
-                            type="button"
-                            class="btn-next"
-                            onclick="nextStep()"
-                        >
+                        <button type="button" class="btn-next" onclick="nextStep()">
                             Revisar →
                         </button>
 
@@ -675,19 +655,16 @@ Novo Orçamento | QuoteDesk
 
                     <div class="stage-actions">
 
-                        <button
-                            type="button"
-                            class="btn-back"
-                            onclick="previousStep()"
-                        >
+                        <button type="button" class="btn-back" onclick="previousStep()">
                             ← Voltar
                         </button>
 
-                        <button
-                            type="submit"
-                            class="btn-save"
-                        >
+                        <button type="submit" class="btn-save">
+                            {% if is_editing %}
+                            Salvar Alterações
+                            {% else %}
                             Criar Orçamento
+                            {% endif %}
                         </button>
 
                     </div>
@@ -712,10 +689,7 @@ Novo Orçamento | QuoteDesk
                         Cliente
                     </span>
 
-                    <span
-                        class="summary-value"
-                        id="summary-customer"
-                    >
+                    <span class="summary-value" id="summary-customer">
                         —
                     </span>
                 </div>
@@ -726,10 +700,7 @@ Novo Orçamento | QuoteDesk
                         Piscina
                     </span>
 
-                    <span
-                        class="summary-value"
-                        id="summary-pool"
-                    >
+                    <span class="summary-value" id="summary-pool">
                         —
                     </span>
                 </div>
@@ -740,10 +711,7 @@ Novo Orçamento | QuoteDesk
                         Aquecimento
                     </span>
 
-                    <span
-                        class="summary-value"
-                        id="summary-heating"
-                    >
+                    <span class="summary-value" id="summary-heating">
                         —
                     </span>
                 </div>
@@ -754,10 +722,7 @@ Novo Orçamento | QuoteDesk
                         Iluminação
                     </span>
 
-                    <span
-                        class="summary-value"
-                        id="summary-lighting"
-                    >
+                    <span class="summary-value" id="summary-lighting">
                         —
                     </span>
                 </div>
@@ -768,10 +733,7 @@ Novo Orçamento | QuoteDesk
                         Cascata
                     </span>
 
-                    <span
-                        class="summary-value"
-                        id="summary-waterfall"
-                    >
+                    <span class="summary-value" id="summary-waterfall">
                         —
                     </span>
                 </div>
@@ -782,10 +744,7 @@ Novo Orçamento | QuoteDesk
                         Tratamento
                     </span>
 
-                    <span
-                        class="summary-value"
-                        id="summary-treatment"
-                    >
+                    <span class="summary-value" id="summary-treatment">
                         —
                     </span>
                 </div>

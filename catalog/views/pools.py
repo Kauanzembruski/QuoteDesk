@@ -2,26 +2,52 @@ from django.contrib.auth.decorators import login_required
 from django.db.models.deletion import ProtectedError
 from django.urls import reverse
 from django.shortcuts import get_object_or_404, redirect, render
-
+from dashboard.models import ActivityLog
+from dashboard.utils import log_activity
 from catalog.forms import PoolModelForm
 from catalog.models import PoolModel
-
+from django.db.models import Q
 
 
 @login_required
 def pool_list(request):
+    order = request.GET.get("order", "model_asc")
+
     pools = PoolModel.objects.all()
+
+    if order == "model_desc":
+        pools = pools.order_by("-model")
+
+    elif order == "price_asc":
+        pools = pools.order_by("base_price")
+
+    elif order == "price_desc":
+        pools = pools.order_by("-base_price")
+
+    else:
+        pools = pools.order_by("model")
 
     return render(
         request,
         "catalog/pool_list.html",
         {
             "pools": pools,
+
             "title": "Piscinas",
-            "subtitle": "Gerencie os modelos de piscinas cadastrados no catálogo.",
+            "subtitle": "Gerencie os modelos de piscinas.",
+
             "create_url": "catalog:pool_create",
             "create_label": "Nova Piscina",
+
             "search_placeholder": "Buscar por modelo...",
+
+            "selected_order": order,
+            "order_options": [
+                ("model_asc", "Modelo A–Z"),
+                ("model_desc", "Modelo Z–A"),
+                ("price_asc", "Menor preço"),
+                ("price_desc", "Maior preço"),
+            ],
         }
     )
 
@@ -32,7 +58,14 @@ def pool_create(request):
         form = PoolModelForm(request.POST,request.FILES)
 
         if form.is_valid():
-            form.save()
+            pool = form.save()
+            log_activity(
+                request.user,
+                ActivityLog.Type.CATALOG_UPDATED,
+                "Piscina cadastrada",
+                str(pool),
+                pool.pk,
+            )
             return redirect("catalog:pool_list")
 
     else:
@@ -102,6 +135,13 @@ def pool_update(request, pk):
 
         if form.is_valid():
             form.save()
+            log_activity(
+                request.user,
+                ActivityLog.Type.CATALOG_UPDATED,
+                "Piscina atualizada",
+                str(pool),
+                pool.pk,
+            )
 
             return redirect(
                 "catalog:pool_detail",
@@ -146,10 +186,19 @@ def pool_delete(request, pk):
     deletion_error = None
     if request.method == "POST":
         try:
+            pool_id = pool.pk
+            pool_name = str(pool)
             pool.delete()
         except ProtectedError:
             deletion_error = "Este item est? vinculado a um or?amento e n?o pode ser exclu?do. Voc? pode desativ?-lo na edi??o."
         else:
+            log_activity(
+                request.user,
+                ActivityLog.Type.CATALOG_UPDATED,
+                "Piscina excluída",
+                pool_name,
+                pool_id,
+            )
             return redirect("catalog:pool_list")
 
     return render(

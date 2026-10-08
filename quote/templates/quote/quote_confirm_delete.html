@@ -1,0 +1,164 @@
+{% extends "base.html" %}
+
+{% block title %}
+Excluir Orçamento | QuoteDesk
+{% endblock %}
+
+{% block extra_css %}
+<style>
+
+    .delete-page {
+        max-width: 600px;
+        margin: 0 auto;
+    }
+
+    .delete-card {
+        background: #ffffff;
+
+        border: 1px solid #d9e4ee;
+        border-radius: 16px;
+
+        padding: 30px;
+
+        box-shadow:
+            0 12px 30px rgba(21, 52, 82, 0.05),
+            0 2px 8px rgba(21, 52, 82, 0.04);
+    }
+
+    .delete-card h1 {
+        margin: 0 0 10px;
+
+        color: #0b2545;
+        font-size: 28px;
+    }
+
+    .delete-card p {
+        margin: 0;
+
+        color: #718399;
+        font-size: 14px;
+    }
+
+    .quote-info {
+        margin-top: 24px;
+
+        padding: 16px;
+
+        border-radius: 10px;
+
+        background: #f8fafc;
+
+        border: 1px solid #e3ebf2;
+    }
+
+    .quote-info strong {
+        color: #102b4c;
+    }
+
+    .delete-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 12px;
+
+        margin-top: 28px;
+    }
+
+    .btn-cancel {
+        height: 44px;
+
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+
+        padding: 0 18px;
+
+        border: 1px solid #cfdbe7;
+        border-radius: 9px;
+
+        background: white;
+
+        color: #40556c;
+
+        text-decoration: none;
+        font-weight: 600;
+    }
+
+    .btn-delete {
+        height: 44px;
+
+        padding: 0 20px;
+
+        border: none;
+        border-radius: 9px;
+
+        background: #d93025;
+        color: white;
+
+        font-weight: 700;
+        cursor: pointer;
+    }
+
+</style>
+{% endblock %}
+
+{% block content %}
+
+<div class="delete-page">
+
+    <div class="delete-card">
+
+        <h1>
+            Excluir orçamento
+        </h1>
+
+        <p>
+            Esta ação não poderá ser desfeita.
+        </p>
+
+
+        <div class="quote-info">
+
+            <strong>
+                Orçamento #{{ quote.pk }}
+            </strong>
+
+            <br>
+
+            {{ quote.customer }}
+
+            <br>
+
+            R$ {{ quote.total_price }}
+
+        </div>
+
+
+        <form method="post">
+
+            {% csrf_token %}
+
+            <div class="delete-actions">
+
+                <a
+                    href="{% url 'quote:quote_detail' quote.pk %}"
+                    class="btn-cancel"
+                >
+                    Cancelar
+                </a>
+
+                <button
+                    type="submit"
+                    class="btn-delete"
+                >
+                    Excluir
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+{% endblock %}

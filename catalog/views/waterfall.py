@@ -3,23 +3,51 @@ from django.db.models.deletion import ProtectedError
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 
+from dashboard.models import ActivityLog
+from dashboard.utils import log_activity
+
 from catalog.forms import WaterfallModelForm
 from catalog.models import Waterfall
 
 @login_required
 def waterfall_list(request):
+    order = request.GET.get("order", "model_asc")
+
     waterfalls = Waterfall.objects.all()
+
+    if order == "model_desc":
+        waterfalls = waterfalls.order_by("-model")
+
+    elif order == "price_asc":
+        waterfalls = waterfalls.order_by("price")
+
+    elif order == "price_desc":
+        waterfalls = waterfalls.order_by("-price")
+
+    else:
+        waterfalls = waterfalls.order_by("model")
 
     return render(
         request,
         "catalog/waterfall_list.html",
         {
             "waterfalls": waterfalls,
+
             "title": "Cascatas",
-            "subtitle": "Gerencie os modelos de cascatas cadastrados no catálogo.",
+            "subtitle": "Gerencie os modelos de cascatas.",
+
             "create_url": "catalog:waterfall_create",
             "create_label": "Nova Cascata",
-            "search_placeholder": "Buscar por modelo...",
+
+            "search_placeholder": "Buscar cascata...",
+
+            "selected_order": order,
+            "order_options": [
+                ("model_asc", "Modelo A–Z"),
+                ("model_desc", "Modelo Z–A"),
+                ("price_asc", "Menor preço"),
+                ("price_desc", "Maior preço"),
+            ],
         }
     )
 
@@ -30,7 +58,14 @@ def waterfall_create(request):
         form = WaterfallModelForm(request.POST)
 
         if form.is_valid():
-            form.save()
+            waterfall = form.save()
+            log_activity(
+                request.user,
+                ActivityLog.Type.CATALOG_UPDATED,
+                "Cascata cadastrada",
+                str(waterfall),
+                waterfall.pk,
+            )
             return redirect("catalog:waterfall_list")
 
     else:
@@ -110,6 +145,13 @@ def waterfall_update(request, pk):
 
         if form.is_valid():
             form.save()
+            log_activity(
+                request.user,
+                ActivityLog.Type.CATALOG_UPDATED,
+                "Cascata atualizada",
+                str(waterfall),
+                waterfall.pk,
+            )
 
             return redirect(
                 "catalog:waterfall_detail",
@@ -155,6 +197,8 @@ def waterfall_delete(request, pk):
 
     if request.method == "POST":
         try:
+            waterfall_id = waterfall.pk
+            waterfall_name = str(waterfall)
             waterfall.delete()
 
         except ProtectedError:
@@ -164,6 +208,13 @@ def waterfall_delete(request, pk):
             )
 
         else:
+            log_activity(
+                request.user,
+                ActivityLog.Type.CATALOG_UPDATED,
+                "Cascata excluída",
+                waterfall_name,
+                waterfall_id,
+            )
             return redirect("catalog:waterfall_list")
 
     return render(

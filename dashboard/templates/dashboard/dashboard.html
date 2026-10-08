@@ -2,11 +2,1759 @@
 
 {% block title %}
 Dashboard | QuoteDesk
-
 {% endblock %}
+
+
+{% block extra_css %}
+<style>
+
+    .dashboard-page {
+        max-width: 1480px;
+        margin: 0 auto;
+    }
+
+
+    /* =====================================================
+       HEADER
+    ===================================================== */
+
+    .dashboard-header {
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-between;
+        gap: 20px;
+
+        margin-bottom: 24px;
+    }
+
+    .welcome-small {
+        margin-bottom: 4px;
+
+        color: #8296ad;
+
+        font-size: 12px;
+        font-weight: 800;
+
+        letter-spacing: 1px;
+        text-transform: uppercase;
+    }
+
+    .dashboard-header h1 {
+        margin: 0;
+
+        color: #071b46;
+
+        font-size: 34px;
+        line-height: 1.1;
+    }
+
+    .dashboard-header p {
+        margin: 7px 0 0;
+
+        color: #718399;
+        font-size: 14px;
+    }
+
+
+    /* =====================================================
+       FILTRO DE MÊS
+    ===================================================== */
+
+    .month-filter {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+
+        height: 46px;
+
+        padding: 0 14px;
+
+        background: #ffffff;
+
+        border: 1px solid #dce6f0;
+        border-radius: 10px;
+
+        box-shadow:
+            0 5px 18px rgba(25, 55, 90, .05);
+    }
+
+    .month-filter svg {
+        width: 18px;
+        height: 18px;
+
+        color: #0d63c7;
+    }
+
+    .month-filter select {
+        border: none;
+        outline: none;
+
+        background: transparent;
+
+        color: #173763;
+
+        font-size: 13px;
+        font-weight: 600;
+
+        cursor: pointer;
+    }
+
+
+    /* =====================================================
+       MÉTRICAS
+    ===================================================== */
+
+    .metrics-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+
+        gap: 16px;
+
+        margin-bottom: 18px;
+    }
+
+    .metric-card {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+
+        min-height: 118px;
+
+        padding: 20px;
+
+        background: #ffffff;
+
+        border: 1px solid #dce6f0;
+        border-radius: 14px;
+
+        box-shadow:
+            0 7px 22px rgba(21, 52, 82, .05);
+    }
+
+    .metric-icon {
+        width: 48px;
+        height: 48px;
+
+        flex-shrink: 0;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        border-radius: 14px;
+
+        background: #e9f3ff;
+        color: #0d8df0;
+    }
+
+    .metric-icon svg {
+        width: 26px;
+        height: 26px;
+    }
+
+    .metric-content {
+        min-width: 0;
+    }
+
+    .metric-label {
+        margin-bottom: 5px;
+
+        color: #294464;
+
+        font-size: 12px;
+        font-weight: 600;
+    }
+
+    .metric-value {
+        color: #071b46;
+
+        font-size: 28px;
+        font-weight: 800;
+
+        line-height: 1;
+    }
+
+
+    /* =====================================================
+       GRID PRINCIPAL
+    ===================================================== */
+
+    .dashboard-main-grid {
+        display: grid;
+        grid-template-columns: minmax(0, 2fr) minmax(300px, .95fr);
+
+        gap: 16px;
+
+        margin-bottom: 16px;
+    }
+
+    .dashboard-bottom-grid {
+        display: grid;
+        grid-template-columns: minmax(0, 2fr) minmax(300px, .95fr);
+
+        gap: 16px;
+    }
+
+
+    /* =====================================================
+       CARDS
+    ===================================================== */
+
+    .dashboard-card {
+        background: #ffffff;
+
+        border: 1px solid #dce6f0;
+        border-radius: 14px;
+
+        box-shadow:
+            0 7px 22px rgba(21, 52, 82, .05);
+    }
+
+    .card-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        gap: 16px;
+
+        padding: 17px 20px;
+    }
+
+    .card-title {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+
+        color: #0b2545;
+
+        font-size: 16px;
+        font-weight: 800;
+    }
+
+    .card-title svg {
+        width: 20px;
+        height: 20px;
+
+        color: #0d8df0;
+    }
+
+    .card-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+
+        color: #0d8df0;
+
+        text-decoration: none;
+
+        font-size: 12px;
+        font-weight: 700;
+    }
+
+
+    /* =====================================================
+       GRÁFICO
+    ===================================================== */
+
+    .chart-card {
+        min-height: 390px;
+    }
+
+    .chart-header-right {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+
+        padding: 4px;
+
+        background: #f3f7fc;
+
+        border-radius: 999px;
+    }
+
+    .chart-tab {
+        padding: 7px 18px;
+
+        border: none;
+        border-radius: 999px;
+
+        background: transparent;
+
+        color: #61758e;
+
+        font-size: 11px;
+        font-weight: 600;
+
+        cursor: pointer;
+    }
+
+    .chart-tab.active {
+        background: #0d73df;
+        color: #ffffff;
+    }
+
+    .chart-body {
+        height: 310px;
+
+        padding: 8px 20px 20px;
+    }
+
+
+    /* =====================================================
+       ATIVIDADE RECENTE
+    ===================================================== */
+
+    .activity-card {
+        min-height: 390px;
+    }
+
+    .activity-list {
+        padding: 2px 20px 16px;
+    }
+
+    .activity-item {
+        position: relative;
+
+        display: grid;
+        grid-template-columns: 40px 1fr auto;
+
+        gap: 12px;
+
+        padding: 10px 0;
+    }
+
+    .activity-item:not(:last-child)::after {
+        content: "";
+
+        position: absolute;
+
+        left: 19px;
+        top: 49px;
+
+        width: 1px;
+        height: calc(100% - 28px);
+
+        background: #d8e4ef;
+    }
+
+    .activity-icon {
+        width: 38px;
+        height: 38px;
+
+        position: relative;
+        z-index: 2;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        border-radius: 50%;
+    }
+
+    .activity-icon svg {
+        width: 18px;
+        height: 18px;
+    }
+
+    .activity-blue {
+        background: #e8f3ff;
+        color: #0d8df0;
+    }
+
+    .activity-green {
+        background: #e7f8ef;
+        color: #12a45c;
+    }
+
+    .activity-purple {
+        background: #f0e9ff;
+        color: #8657e7;
+    }
+
+    .activity-red {
+        background: #fff0ef;
+        color: #d93025;
+    }
+
+    .activity-gray {
+        background: #edf2f7;
+        color: #536b84;
+    }
+
+    .activity-main strong {
+        display: block;
+
+        color: #0b2545;
+
+        font-size: 12px;
+    }
+
+    .activity-main span {
+        display: block;
+
+        margin-top: 3px;
+
+        color: #718399;
+
+        font-size: 11px;
+    }
+
+    .activity-time {
+        padding-top: 3px;
+
+        color: #8496ab;
+
+        font-size: 10px;
+
+        white-space: nowrap;
+    }
+
+
+    /* =====================================================
+       PENDENTES
+    ===================================================== */
+
+    .pending-table {
+        width: 100%;
+
+        border-collapse: collapse;
+    }
+
+    .pending-table thead {
+        background: #f2f7fc;
+    }
+
+    .pending-table th {
+        padding: 10px 15px;
+
+        text-align: left;
+
+        color: #61758e;
+
+        font-size: 10px;
+        font-weight: 800;
+
+        text-transform: uppercase;
+    }
+
+    .pending-table td {
+        padding: 11px 15px;
+
+        border-bottom: 1px solid #edf2f6;
+
+        color: #304861;
+
+        font-size: 11px;
+    }
+
+    .pending-table tbody tr:last-child td {
+        border-bottom: none;
+    }
+
+    .pending-table tbody tr:hover {
+        background: #f9fbfd;
+    }
+
+    .pending-number {
+        color: #0b2545;
+        font-weight: 800;
+    }
+
+    .pending-price {
+        color: #102b4c;
+        font-weight: 700;
+    }
+
+    .status-badge {
+        display: inline-flex;
+
+        padding: 5px 10px;
+
+        border-radius: 999px;
+
+        font-size: 10px;
+        font-weight: 700;
+    }
+
+    .status-draft {
+        background: #edf2f7;
+        color: #53687c;
+    }
+
+    .status-sent {
+        background: #e8f3ff;
+        color: #0d73df;
+    }
+
+    .actions-link {
+        color: #58718c;
+
+        text-decoration: none;
+
+        font-size: 18px;
+        font-weight: 700;
+    }
+
+
+    /* =====================================================
+       AÇÕES RÁPIDAS
+    ===================================================== */
+
+    .quick-actions-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+
+        gap: 10px;
+
+        padding: 0 16px 16px;
+    }
+
+    .quick-action {
+        min-height: 84px;
+
+        display: grid;
+        grid-template-columns: 34px 1fr 26px;
+
+        align-items: start;
+
+        gap: 10px;
+
+        padding: 14px;
+
+        border: 1px solid #dce6f0;
+        border-radius: 11px;
+
+        background: #ffffff;
+
+        text-decoration: none;
+
+        transition: .2s ease;
+    }
+
+    .quick-action:hover {
+        border-color: #0d8df0;
+
+        transform: translateY(-1px);
+
+        box-shadow:
+            0 8px 20px rgba(13, 141, 240, .08);
+    }
+
+    .quick-icon {
+        width: 34px;
+        height: 34px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        color: #0d8df0;
+    }
+
+    .quick-icon svg {
+        width: 24px;
+        height: 24px;
+    }
+
+    .quick-text strong {
+        display: block;
+
+        margin-bottom: 5px;
+
+        color: #0b2545;
+
+        font-size: 11px;
+    }
+
+    .quick-text span {
+        color: #718399;
+
+        font-size: 10px;
+        line-height: 1.35;
+    }
+
+    .quick-arrow {
+        width: 24px;
+        height: 24px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        border-radius: 50%;
+
+        background: #e9f3ff;
+
+        color: #0d8df0;
+    }
+
+
+    /* =====================================================
+       EMPTY
+    ===================================================== */
+
+    .empty-state {
+        padding: 35px;
+
+        color: #718399;
+
+        text-align: center;
+
+        font-size: 12px;
+    }
+
+
+    /* =====================================================
+       RESPONSIVO
+    ===================================================== */
+
+    @media (max-width: 1050px) {
+
+        .metrics-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .dashboard-main-grid,
+        .dashboard-bottom-grid {
+            grid-template-columns: 1fr;
+        }
+
+    }
+
+    @media (max-width: 650px) {
+
+        .dashboard-header {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .metrics-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .quick-actions-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .pending-card {
+            overflow-x: auto;
+        }
+
+        .pending-table {
+            min-width: 700px;
+        }
+
+    }
+
+</style>
+{% endblock %}
+
+
 
 {% block content %}
 
-<h1>Dashboard</h1>
+<div class="dashboard-page">
+
+
+    <!-- HEADER -->
+
+    <div class="dashboard-header">
+
+        <div>
+
+            <div class="welcome-small">
+
+                Bem-vindo(a),
+
+                {% if request.user.first_name %}
+                    {{ request.user.first_name }}
+                {% else %}
+                    {{ request.user.username }}
+                {% endif %}
+
+            </div>
+
+
+            <h1>
+                Seu desempenho em um só lugar.
+            </h1>
+
+            <p>
+                Acompanhe seus orçamentos, clientes e resultados em tempo real.
+            </p>
+
+        </div>
+
+
+        <form method="get" class="month-filter">
+
+            <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+            >
+                <rect
+                    x="3"
+                    y="5"
+                    width="18"
+                    height="16"
+                    rx="2"
+                ></rect>
+
+                <path d="M16 3v4"></path>
+                <path d="M8 3v4"></path>
+                <path d="M3 11h18"></path>
+            </svg>
+
+
+            <select
+                name="month"
+                onchange="this.form.submit()"
+            >
+
+                {% for value, label in months %}
+
+                    <option
+                        value="{{ value }}"
+                        {% if selected_month == value %}selected{% endif %}
+                    >
+                        {{ label }}
+                    </option>
+
+                {% endfor %}
+
+            </select>
+
+        </form>
+
+    </div>
+
+
+
+    <!-- MÉTRICAS -->
+
+    <div class="metrics-grid">
+
+
+        <!-- ORÇAMENTOS -->
+
+        <div class="metric-card">
+
+            <div class="metric-icon">
+
+                <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                >
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+
+                    <polyline points="14 2 14 8 20 8"></polyline>
+                </svg>
+
+            </div>
+
+
+            <div class="metric-content">
+
+                <div class="metric-label">
+                    Orçamentos
+                </div>
+
+                <div class="metric-value">
+                    {{ total_quotes }}
+                </div>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- APROVADOS -->
+
+        <div class="metric-card">
+
+            <div class="metric-icon">
+
+                <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2.3"
+                >
+                    <circle
+                        cx="12"
+                        cy="12"
+                        r="9"
+                    ></circle>
+
+                    <path d="m8 12 2.5 2.5L16 9"></path>
+                </svg>
+
+            </div>
+
+
+            <div class="metric-content">
+
+                <div class="metric-label">
+                    Aprovados
+                </div>
+
+                <div class="metric-value">
+                    {{ approved_quotes }}
+                </div>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- EM ANDAMENTO -->
+
+        <div class="metric-card">
+
+            <div class="metric-icon">
+
+                <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                >
+                    <circle
+                        cx="12"
+                        cy="12"
+                        r="9"
+                    ></circle>
+
+                    <path d="M12 7v5l3 2"></path>
+                </svg>
+
+            </div>
+
+
+            <div class="metric-content">
+
+                <div class="metric-label">
+                    Em andamento
+                </div>
+
+                <div class="metric-value">
+                    {{ pending_quotes }}
+                </div>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- VALOR APROVADO -->
+
+        <div class="metric-card">
+
+            <div class="metric-icon">
+
+                <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                >
+                    <ellipse
+                        cx="12"
+                        cy="5"
+                        rx="7"
+                        ry="3"
+                    ></ellipse>
+
+                    <path d="M5 5v5c0 1.7 3.1 3 7 3s7-1.3 7-3V5"></path>
+
+                    <path d="M5 10v5c0 1.7 3.1 3 7 3s7-1.3 7-3v-5"></path>
+                </svg>
+
+            </div>
+
+
+            <div class="metric-content">
+
+                <div class="metric-label">
+                    Valor aprovado
+                </div>
+
+                <div class="metric-value">
+                    R$ {{ approved_value|floatformat:2 }}
+                </div>
+
+            </div>
+
+        </div>
+
+
+    </div>
+
+
+
+    <!-- GRÁFICO + ATIVIDADES -->
+
+    <div class="dashboard-main-grid">
+
+
+        <!-- GRÁFICO -->
+
+        <div class="dashboard-card chart-card">
+
+            <div class="card-header">
+
+                <div class="card-title">
+
+                    <svg
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                    >
+                        <path d="M4 20V10"></path>
+                        <path d="M10 20V4"></path>
+                        <path d="M16 20v-7"></path>
+                        <path d="M22 20H2"></path>
+                    </svg>
+
+                    Orçamentos por mês
+
+                </div>
+
+
+                <div class="chart-header-right">
+
+                    <button
+                        type="button"
+                        class="chart-tab active"
+                        data-chart="quantity"
+                    >
+                        Quantidade
+                    </button>
+
+
+                    <button
+                        type="button"
+                        class="chart-tab"
+                        data-chart="value"
+                    >
+                        Valor
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <div class="chart-body">
+
+                <canvas id="quotes-chart"></canvas>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- ATIVIDADE RECENTE -->
+
+        <div class="dashboard-card activity-card">
+
+            <div class="card-header">
+
+                <div class="card-title">
+
+                    <svg
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                    >
+                        <circle
+                            cx="12"
+                            cy="12"
+                            r="9"
+                        ></circle>
+
+                        <path d="M12 7v5l3 2"></path>
+                    </svg>
+
+                    Atividade recente
+
+                </div>
+
+            </div>
+
+
+            {% if recent_activities %}
+
+                <div class="activity-list">
+
+
+                    {% for activity in recent_activities %}
+
+                        <div class="activity-item">
+
+
+                            {% if activity.type == "quote_approved" %}
+
+                                <div class="activity-icon activity-green">
+
+                                    <svg
+                                        viewBox="0 0 24 24"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        stroke-width="2.5"
+                                    >
+                                        <circle
+                                            cx="12"
+                                            cy="12"
+                                            r="9"
+                                        ></circle>
+
+                                        <path d="m8 12 2.5 2.5L16 9"></path>
+                                    </svg>
+
+                                </div>
+
+
+                            {% elif activity.type == "customer_created" %}
+
+                                <div class="activity-icon activity-green">
+
+                                    <svg
+                                        viewBox="0 0 24 24"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        stroke-width="2"
+                                    >
+                                        <circle
+                                            cx="9"
+                                            cy="7"
+                                            r="4"
+                                        ></circle>
+
+                                        <path d="M2 21c0-4 3-7 7-7"></path>
+
+                                        <path d="M19 8v6"></path>
+
+                                        <path d="M22 11h-6"></path>
+                                    </svg>
+
+                                </div>
+
+
+                            {% elif activity.type == "customer_deleted" %}
+
+                                <div class="activity-icon activity-red">
+
+                                    <svg
+                                        viewBox="0 0 24 24"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        stroke-width="2"
+                                    >
+                                        <path d="M3 6h18"></path>
+                                        <path d="M8 6V4h8v2"></path>
+                                        <path d="M19 6l-1 14H6L5 6"></path>
+                                    </svg>
+
+                                </div>
+
+
+                            {% elif activity.type == "catalog_updated" %}
+
+                                <div class="activity-icon activity-purple">
+
+                                    <svg
+                                        viewBox="0 0 24 24"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        stroke-width="2"
+                                    >
+                                        <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
+
+                                        <polyline points="2 17 12 22 22 17"></polyline>
+
+                                        <polyline points="2 12 12 17 22 12"></polyline>
+                                    </svg>
+
+                                </div>
+
+
+                            {% elif activity.type == "quote_deleted" %}
+
+                                <div class="activity-icon activity-red">
+
+                                    <svg
+                                        viewBox="0 0 24 24"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        stroke-width="2"
+                                    >
+                                        <path d="M3 6h18"></path>
+                                        <path d="M8 6V4h8v2"></path>
+                                        <path d="M19 6l-1 14H6L5 6"></path>
+                                    </svg>
+
+                                </div>
+
+
+                            {% else %}
+
+                                <div class="activity-icon activity-blue">
+
+                                    <svg
+                                        viewBox="0 0 24 24"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        stroke-width="2"
+                                    >
+                                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+
+                                        <polyline points="14 2 14 8 20 8"></polyline>
+                                    </svg>
+
+                                </div>
+
+                            {% endif %}
+
+
+
+                            <div class="activity-main">
+
+                                <strong>
+                                    {{ activity.title }}
+                                </strong>
+
+                                <span>
+                                    {{ activity.description }}
+                                </span>
+
+                            </div>
+
+
+                            <div class="activity-time">
+
+                                há {{ activity.created_at|timesince }}
+
+                            </div>
+
+
+                        </div>
+
+                    {% endfor %}
+
+
+                </div>
+
+            {% else %}
+
+                <div class="empty-state">
+
+                    Nenhuma atividade recente.
+
+                </div>
+
+            {% endif %}
+
+        </div>
+
+
+    </div>
+
+
+
+    <!-- PENDENTES + AÇÕES RÁPIDAS -->
+
+    <div class="dashboard-bottom-grid">
+
+
+        <!-- PENDENTES -->
+
+        <div class="dashboard-card pending-card">
+
+            <div class="card-header">
+
+                <div class="card-title">
+
+                    <svg
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                    >
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+
+                        <polyline points="14 2 14 8 20 8"></polyline>
+                    </svg>
+
+                    Orçamentos pendentes
+
+                </div>
+
+
+                <a
+                    href="{% url 'quote:quote_list' %}"
+                    class="card-link"
+                >
+                    Ver todos →
+                </a>
+
+            </div>
+
+
+            {% if pending_list %}
+
+                <table class="pending-table">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>#</th>
+
+                            <th>Cliente</th>
+
+                            <th>Piscina</th>
+
+                            <th>Valor</th>
+
+                            <th>Status</th>
+
+                            <th>Última atualização</th>
+
+                            <th>Ações</th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody>
+
+                        {% for quote in pending_list %}
+
+                            <tr>
+
+                                <td class="pending-number">
+                                    #{{ quote.pk }}
+                                </td>
+
+
+                                <td>
+                                    {{ quote.customer }}
+                                </td>
+
+
+                                <td>
+                                    {{ quote.pool.model }}
+                                </td>
+
+
+                                <td class="pending-price">
+                                    R$ {{ quote.total_price|floatformat:2 }}
+                                </td>
+
+
+                                <td>
+
+                                    <span class="status-badge status-{{ quote.status }}">
+
+                                        {{ quote.get_status_display }}
+
+                                    </span>
+
+                                </td>
+
+
+                                <td>
+
+                                    há {{ quote.updated_at|timesince }}
+
+                                </td>
+
+
+                                <td>
+
+                                    <a
+                                        href="{% url 'quote:quote_detail' quote.pk %}"
+                                        class="actions-link"
+                                    >
+                                        ⋯
+                                    </a>
+
+                                </td>
+
+                            </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            {% else %}
+
+                <div class="empty-state">
+
+                    Nenhum orçamento pendente.
+
+                </div>
+
+            {% endif %}
+
+        </div>
+
+
+
+        <!-- AÇÕES RÁPIDAS -->
+
+        <div class="dashboard-card">
+
+            <div class="card-header">
+
+                <div class="card-title">
+
+                    <svg
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                    >
+                        <path d="m13 2-8 12h7l-1 8 8-12h-7z"></path>
+                    </svg>
+
+                    Ações rápidas
+
+                </div>
+
+            </div>
+
+
+            <div class="quick-actions-grid">
+
+
+                <!-- NOVO ORÇAMENTO -->
+
+                <a
+                    href="{% url 'quote:quote_create' %}"
+                    class="quick-action"
+                >
+
+                    <div class="quick-icon">
+
+                        <svg
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                        >
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+
+                            <polyline points="14 2 14 8 20 8"></polyline>
+                        </svg>
+
+                    </div>
+
+
+                    <div class="quick-text">
+
+                        <strong>
+                            Novo orçamento
+                        </strong>
+
+                        <span>
+                            Crie um orçamento em poucos cliques.
+                        </span>
+
+                    </div>
+
+
+                    <div class="quick-arrow">
+                        →
+                    </div>
+
+                </a>
+
+
+
+                <!-- NOVO CLIENTE -->
+
+                <a
+                    href="{% url 'customer:customer_create' %}"
+                    class="quick-action"
+                >
+
+                    <div class="quick-icon">
+
+                        <svg
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                        >
+                            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
+
+                            <circle
+                                cx="9"
+                                cy="7"
+                                r="4"
+                            ></circle>
+
+                            <path d="M19 8v6"></path>
+                            <path d="M22 11h-6"></path>
+                        </svg>
+
+                    </div>
+
+
+                    <div class="quick-text">
+
+                        <strong>
+                            Cadastrar cliente
+                        </strong>
+
+                        <span>
+                            Adicione um novo cliente ao sistema.
+                        </span>
+
+                    </div>
+
+
+                    <div class="quick-arrow">
+                        →
+                    </div>
+
+                </a>
+
+
+
+                <!-- CATÁLOGO -->
+
+                <a
+                    href="{% url 'catalog:catalog_hub' %}"
+                    class="quick-action"
+                >
+
+                    <div class="quick-icon">
+
+                        <svg
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                        >
+                            <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
+
+                            <polyline points="2 17 12 22 22 17"></polyline>
+
+                            <polyline points="2 12 12 17 22 12"></polyline>
+                        </svg>
+
+                    </div>
+
+
+                    <div class="quick-text">
+
+                        <strong>
+                            Gerenciar produtos
+                        </strong>
+
+                        <span>
+                            Acesse piscinas e serviços do catálogo.
+                        </span>
+
+                    </div>
+
+
+                    <div class="quick-arrow">
+                        →
+                    </div>
+
+                </a>
+
+
+
+                <!-- ORÇAMENTOS -->
+
+                <a
+                    href="{% url 'quote:quote_list' %}"
+                    class="quick-action"
+                >
+
+                    <div class="quick-icon">
+
+                        <svg
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                        >
+                            <path d="M4 20V10"></path>
+                            <path d="M10 20V4"></path>
+                            <path d="M16 20v-7"></path>
+                            <path d="M22 20H2"></path>
+                        </svg>
+
+                    </div>
+
+
+                    <div class="quick-text">
+
+                        <strong>
+                            Ver orçamentos
+                        </strong>
+
+                        <span>
+                            Consulte e gerencie seus orçamentos.
+                        </span>
+
+                    </div>
+
+
+                    <div class="quick-arrow">
+                        →
+                    </div>
+
+                </a>
+
+
+            </div>
+
+        </div>
+
+
+    </div>
+
+
+</div>
+
+
+{{ chart_labels|json_script:"chart-labels" }}
+{{ chart_values|json_script:"chart-values" }}
+{{ chart_amounts|json_script:"chart-amounts" }}
+
+{% endblock %}
+
+
+
+{% block extra_js %}
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+
+    const labels = JSON.parse(
+        document.getElementById(
+            "chart-labels"
+        ).textContent
+    );
+
+
+    const quantities = JSON.parse(
+        document.getElementById(
+            "chart-values"
+        ).textContent
+    );
+
+
+    const amounts = JSON.parse(
+        document.getElementById(
+            "chart-amounts"
+        ).textContent
+    );
+
+
+    const canvas = document.getElementById(
+        "quotes-chart"
+    );
+
+
+    const chart = new Chart(
+        canvas,
+        {
+
+            type: "bar",
+
+            data: {
+
+                labels: labels,
+
+                datasets: [
+                    {
+                        data: quantities,
+
+                        borderRadius: 5,
+
+                        backgroundColor:
+                            "rgba(93, 169, 245, .45)",
+
+                        hoverBackgroundColor:
+                            "#0d73df",
+
+                        borderSkipped: false,
+                    }
+                ]
+
+            },
+
+
+            options: {
+
+                responsive: true,
+
+                maintainAspectRatio: false,
+
+
+                plugins: {
+
+                    legend: {
+                        display: false,
+                    },
+
+
+                    tooltip: {
+
+                        backgroundColor:
+                            "#0b2545",
+
+                        padding: 10,
+
+                        displayColors: false,
+
+                    }
+
+                },
+
+
+                scales: {
+
+                    x: {
+
+                        grid: {
+                            display: false,
+                        },
+
+                        border: {
+                            display: false,
+                        },
+
+                        ticks: {
+                            color: "#61758e",
+                        },
+
+                    },
+
+
+                    y: {
+
+                        beginAtZero: true,
+
+                        border: {
+                            display: false,
+                        },
+
+                        grid: {
+                            color:
+                                "rgba(183, 201, 218, .35)",
+                        },
+
+                        ticks: {
+                            color: "#718399",
+                            precision: 0,
+                        },
+
+                    }
+
+                }
+
+            }
+
+        }
+    );
+
+
+
+    document
+        .querySelectorAll(
+            ".chart-tab"
+        )
+        .forEach(button => {
+
+            button.addEventListener(
+                "click",
+                function () {
+
+                    document
+                        .querySelectorAll(
+                            ".chart-tab"
+                        )
+                        .forEach(item => {
+
+                            item.classList.remove(
+                                "active"
+                            );
+
+                        });
+
+
+                    this.classList.add(
+                        "active"
+                    );
+
+
+                    const type =
+                        this.dataset.chart;
+
+
+                    if (type === "value") {
+
+                        chart.data.datasets[0].data =
+                            amounts;
+
+
+                        chart.options.scales.y.ticks.callback =
+                            function(value) {
+
+                                return "R$ " +
+                                    Number(value)
+                                        .toLocaleString(
+                                            "pt-BR"
+                                        );
+
+                            };
+
+                    } else {
+
+                        chart.data.datasets[0].data =
+                            quantities;
+
+
+                        chart.options.scales.y.ticks.callback =
+                            function(value) {
+
+                                return value;
+
+                            };
+
+                    }
+
+
+                    chart.update();
+
+                }
+            );
+
+        });
+
+</script>
 
 {% endblock %}

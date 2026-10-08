@@ -6,9 +6,10 @@ from .models import User
 
 @admin.register(User)
 class CustomUserAdmin(UserAdmin):
+
     fieldsets = UserAdmin.fieldsets + (
         (
-            "QuoteDesk",
+            "Informações adicionais",
             {
                 "fields": (
                     "phone",
@@ -21,9 +22,11 @@ class CustomUserAdmin(UserAdmin):
 
     add_fieldsets = UserAdmin.add_fieldsets + (
         (
-            "QuoteDesk",
+            "Informações adicionais",
             {
                 "fields": (
+                    "first_name",
+                    "last_name",
                     "phone",
                     "photo",
                     "role",
@@ -36,14 +39,6 @@ class CustomUserAdmin(UserAdmin):
         "username",
         "first_name",
         "last_name",
-        "email",
         "role",
-        "is_staff",
-        "is_active",
-    )
-
-    list_filter = (
-        "role",
-        "is_staff",
         "is_active",
     )

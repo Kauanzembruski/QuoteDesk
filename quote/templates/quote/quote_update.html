@@ -1,0 +1,522 @@
+{% extends "base.html" %}
+
+{% block title %}
+Editar Orçamento #{{ quote.pk }} | QuoteDesk
+{% endblock %}
+
+
+{% block extra_css %}
+<style>
+
+    .quote-update-page {
+        max-width: 1180px;
+        margin: 0 auto;
+    }
+
+    .page-header {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 20px;
+
+        margin-bottom: 26px;
+    }
+
+    .page-header h1 {
+        margin: 0 0 6px;
+
+        font-size: 32px;
+        color: #0b2545;
+    }
+
+    .page-header p {
+        margin: 0;
+
+        color: #718399;
+        font-size: 14px;
+    }
+
+
+    .status-area {
+        min-width: 190px;
+    }
+
+    .status-area label {
+        display: block;
+
+        margin-bottom: 7px;
+
+        font-size: 12px;
+        font-weight: 700;
+        color: #718399;
+    }
+
+    .status-area select {
+        width: 100%;
+        height: 42px;
+
+        padding: 0 12px;
+
+        border: 1px solid #cfdbe7;
+        border-radius: 9px;
+
+        background: white;
+
+        color: #102b4c;
+        font-weight: 600;
+    }
+
+
+    .update-layout {
+        display: grid;
+        grid-template-columns: 1fr 340px;
+
+        gap: 24px;
+
+        align-items: start;
+    }
+
+
+    .card {
+        background: white;
+
+        border: 1px solid #d9e4ee;
+        border-radius: 16px;
+
+        padding: 26px;
+
+        box-shadow:
+            0 12px 30px rgba(21, 52, 82, 0.05),
+            0 2px 8px rgba(21, 52, 82, 0.04);
+    }
+
+
+    .card + .card {
+        margin-top: 22px;
+    }
+
+
+    .card h2 {
+        margin: 0 0 20px;
+
+        font-size: 18px;
+        color: #102b4c;
+    }
+
+
+    .form-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+
+        gap: 18px;
+    }
+
+
+    .field-group {
+        display: flex;
+        flex-direction: column;
+        gap: 7px;
+    }
+
+    .field-group.full {
+        grid-column: 1 / -1;
+    }
+
+
+    .field-group label {
+        font-size: 13px;
+        font-weight: 700;
+        color: #304861;
+    }
+
+
+    .field-group select,
+    .field-group input {
+        width: 100%;
+        height: 44px;
+
+        padding: 0 12px;
+
+        border: 1px solid #cfdbe7;
+        border-radius: 9px;
+
+        background: white;
+
+        color: #102b4c;
+
+        outline: none;
+    }
+
+
+    .field-group select:focus,
+    .field-group input:focus {
+        border-color: #0d8df0;
+
+        box-shadow:
+            0 0 0 3px rgba(13, 141, 240, .10);
+    }
+
+
+    .summary-row {
+        display: flex;
+        justify-content: space-between;
+
+        gap: 15px;
+
+        padding: 13px 0;
+
+        border-bottom: 1px solid #edf2f6;
+    }
+
+    .summary-label {
+        color: #718399;
+        font-size: 13px;
+    }
+
+    .summary-value {
+        color: #102b4c;
+        font-weight: 700;
+        font-size: 13px;
+    }
+
+
+    .summary-total {
+        display: flex;
+        justify-content: space-between;
+
+        padding-top: 18px;
+        margin-top: 10px;
+
+        color: #0b2545;
+        font-size: 18px;
+        font-weight: 800;
+    }
+
+
+    .actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 12px;
+
+        margin-top: 24px;
+    }
+
+
+    .btn-cancel {
+        height: 44px;
+
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+
+        padding: 0 18px;
+
+        border: 1px solid #cfdbe7;
+        border-radius: 9px;
+
+        background: white;
+
+        color: #40556c;
+
+        text-decoration: none;
+        font-weight: 600;
+    }
+
+
+    .btn-save {
+        height: 44px;
+
+        padding: 0 22px;
+
+        border: none;
+        border-radius: 9px;
+
+        background: linear-gradient(
+            90deg,
+            #0876d8,
+            #0d8df0
+        );
+
+        color: white;
+
+        font-weight: 700;
+        cursor: pointer;
+    }
+
+
+    @media (max-width: 900px) {
+
+        .update-layout {
+            grid-template-columns: 1fr;
+        }
+
+        .form-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .field-group.full {
+            grid-column: auto;
+        }
+
+        .page-header {
+            flex-direction: column;
+        }
+
+        .status-area {
+            width: 100%;
+        }
+
+    }
+
+</style>
+{% endblock %}
+
+
+{% block content %}
+
+<div class="quote-update-page">
+
+    <form method="post">
+
+        {% csrf_token %}
+
+
+        <div class="page-header">
+
+            <div>
+
+                <h1>
+                    Editar Orçamento #{{ quote.pk }}
+                </h1>
+
+                <p>
+                    {{ quote.customer }} · criado em {{ quote.created_at|date:"d/m/Y" }}
+                </p>
+
+            </div>
+
+
+            <div class="status-area">
+
+                <label>
+                    Status
+                </label>
+
+                {{ form.status }}
+
+            </div>
+
+        </div>
+
+
+        <div class="update-layout">
+
+
+            <div>
+
+
+                <div class="card">
+
+                    <h2>
+                        Informações principais
+                    </h2>
+
+                    <div class="form-grid">
+
+                        <div class="field-group full">
+
+                            <label>
+                                Cliente
+                            </label>
+
+                            {{ form.customer }}
+
+                        </div>
+
+
+                        <div class="field-group full">
+
+                            <label>
+                                Piscina
+                            </label>
+
+                            {{ form.pool }}
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="card">
+
+                    <h2>
+                        Adicionais
+                    </h2>
+
+                    <div class="form-grid">
+
+                        <div class="field-group">
+
+                            <label>
+                                Aquecimento
+                            </label>
+
+                            {{ form.heating }}
+
+                        </div>
+
+
+                        <div class="field-group">
+
+                            <label>
+                                Iluminação
+                            </label>
+
+                            {{ form.lighting }}
+
+                        </div>
+
+
+                        <div class="field-group">
+
+                            <label>
+                                Cascata
+                            </label>
+
+                            {{ form.waterfall }}
+
+                        </div>
+
+
+                        <div class="field-group">
+
+                            <label>
+                                Tratamento da água
+                            </label>
+
+                            {{ form.water_treatment }}
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="actions">
+
+                    <a
+                        href="{% url 'quote:quote_detail' quote.pk %}"
+                        class="btn-cancel"
+                    >
+                        Cancelar
+                    </a>
+
+                    <button
+                        type="submit"
+                        class="btn-save"
+                    >
+                        Salvar alterações
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <aside class="card">
+
+                <h2>
+                    Resumo atual
+                </h2>
+
+
+                <div class="summary-row">
+
+                    <span class="summary-label">
+                        Piscina
+                    </span>
+
+                    <span class="summary-value">
+                        R$ {{ quote.pool_price }}
+                    </span>
+
+                </div>
+
+
+                <div class="summary-row">
+
+                    <span class="summary-label">
+                        Aquecimento
+                    </span>
+
+                    <span class="summary-value">
+                        R$ {{ quote.heating_price }}
+                    </span>
+
+                </div>
+
+
+                <div class="summary-row">
+
+                    <span class="summary-label">
+                        Iluminação
+                    </span>
+
+                    <span class="summary-value">
+                        R$ {{ quote.lighting_price }}
+                    </span>
+
+                </div>
+
+
+                <div class="summary-row">
+
+                    <span class="summary-label">
+                        Cascata
+                    </span>
+
+                    <span class="summary-value">
+                        R$ {{ quote.waterfall_price }}
+                    </span>
+
+                </div>
+
+
+                <div class="summary-row">
+
+                    <span class="summary-label">
+                        Tratamento
+                    </span>
+
+                    <span class="summary-value">
+                        R$ {{ quote.water_treatment_price }}
+                    </span>
+
+                </div>
+
+
+                <div class="summary-total">
+
+                    <span>
+                        Total
+                    </span>
+
+                    <span>
+                        R$ {{ quote.total_price }}
+                    </span>
+
+                </div>
+
+            </aside>
+
+
+        </div>
+
+    </form>
+
+</div>
+
+{% endblock %}

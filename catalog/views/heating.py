@@ -2,6 +2,8 @@ from django.contrib.auth.decorators import login_required
 from django.db.models.deletion import ProtectedError
 from django.urls import reverse
 from django.shortcuts import get_object_or_404, redirect, render
+from dashboard.models import ActivityLog
+from dashboard.utils import log_activity
 
 from catalog.forms import HeatingModelForm
 from catalog.models import HeatingOption
@@ -9,18 +11,43 @@ from catalog.models import HeatingOption
 
 @login_required
 def heating_list(request):
+    order = request.GET.get("order", "type_asc")
+
     heating_options = HeatingOption.objects.all()
+
+    if order == "type_desc":
+        heating_options = heating_options.order_by("-type")
+
+    elif order == "price_asc":
+        heating_options = heating_options.order_by("price")
+
+    elif order == "price_desc":
+        heating_options = heating_options.order_by("-price")
+
+    else:
+        heating_options = heating_options.order_by("type")
 
     return render(
         request,
         "catalog/heating_list.html",
         {
             "heating_options": heating_options,
+
             "title": "Aquecimento",
-            "subtitle": "Gerencie as opções de aquecimento cadastradas no catálogo.",
+            "subtitle": "Gerencie as opções de aquecimento.",
+
             "create_url": "catalog:heating_create",
             "create_label": "Novo Aquecimento",
-            "search_placeholder": "Buscar por tipo ou medida...",
+
+            "search_placeholder": "Buscar aquecimento...",
+
+            "selected_order": order,
+            "order_options": [
+                ("type_asc", "Tipo A–Z"),
+                ("type_desc", "Tipo Z–A"),
+                ("price_asc", "Menor preço"),
+                ("price_desc", "Maior preço"),
+            ],
         }
     )
 
@@ -31,7 +58,14 @@ def heating_create(request):
         form = HeatingModelForm(request.POST)
 
         if form.is_valid():
-            form.save()
+            heating = form.save()
+            log_activity(
+                request.user,
+                ActivityLog.Type.CATALOG_UPDATED,
+                "Aquecimento cadastrado",
+                str(heating),
+                heating.pk,
+            )
             return redirect("catalog:heating_list")
 
     else:
@@ -101,6 +135,13 @@ def heating_update(request, pk):
 
         if form.is_valid():
             form.save()
+            log_activity(
+                request.user,
+                ActivityLog.Type.CATALOG_UPDATED,
+                "Aquecimento atualizado",
+                str(heating),
+                heating.pk,
+            )
 
             return redirect(
                 "catalog:heating_detail",
@@ -145,10 +186,19 @@ def heating_delete(request, pk):
     deletion_error = None
     if request.method == "POST":
         try:
+            heating_id = heating.pk
+            heating_name = str(heating)
             heating.delete()
         except ProtectedError:
             deletion_error = "Este item est? vinculado a um or?amento e n?o pode ser exclu?do. Voc? pode desativ?-lo na edi??o."
         else:
+            log_activity(
+                request.user,
+                ActivityLog.Type.CATALOG_UPDATED,
+                "Aquecimento excluído",
+                heating_name,
+                heating_id,
+            )
             return redirect("catalog:heating_list")
 
     return render(

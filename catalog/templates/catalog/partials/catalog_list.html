@@ -101,11 +101,9 @@
         border: none;
         border-radius: 10px;
 
-        background: linear-gradient(
-            90deg,
-            #0876d8,
-            #0d8df0
-        );
+        background: linear-gradient(90deg,
+                #0876d8,
+                #0d8df0);
 
         color: #ffffff;
 
@@ -352,6 +350,30 @@
         transition: .15s ease;
     }
 
+    .order-select {
+        width: 190px;
+        height: 46px;
+
+        padding: 0 12px;
+
+        border: 1px solid #cfdbe7;
+        border-radius: 10px;
+
+        background: #ffffff;
+
+        color: #304861;
+        font-size: 14px;
+
+        outline: none;
+    }
+
+    .order-select:focus {
+        border-color: #0d8df0;
+
+        box-shadow:
+            0 0 0 3px rgba(13, 141, 240, .10);
+    }
+
     .actions-dropdown a:hover {
         background: #f4f8fc;
         color: #0d8df0;
@@ -410,20 +432,10 @@
 
 <div class="breadcrumb-row">
 
-    <a
-        href="{% url 'catalog:catalog_hub' %}"
-        class="back-button"
-        aria-label="Voltar para catálogo"
-        title="Voltar para catálogo"
-    >
-        <svg
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2.5"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-        >
+    <a href="{% url 'catalog:catalog_hub' %}" class="back-button" aria-label="Voltar para catálogo"
+        title="Voltar para catálogo">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+            stroke-linejoin="round">
             <path d="M15 18l-6-6 6-6"></path>
         </svg>
     </a>
@@ -465,10 +477,7 @@
 
     </div>
 
-    <a
-        href="{% url create_url %}"
-        class="new-item-button"
-    >
+    <a href="{% url create_url %}" class="new-item-button">
         + {{ create_label }}
     </a>
 
@@ -481,25 +490,30 @@
 
         <div class="search-wrapper">
 
-            <svg
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-            >
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <circle cx="11" cy="11" r="7"></circle>
                 <path d="m20 20-3.5-3.5"></path>
             </svg>
 
-            <input
-                type="search"
-                id="catalog-search"
-                aria-label="{{ search_placeholder }}"
-                placeholder="{{ search_placeholder|default:'Buscar...' }}"
-            >
+            <input type="search" id="catalog-search" aria-label="{{ search_placeholder }}"
+                placeholder="{{ search_placeholder|default:'Buscar...' }}">
 
         </div>
+        {% if order_options %}
 
+        <select class="order-select" onchange="changeOrder(this.value)">
+
+            {% for value, label in order_options %}
+
+            <option value="{{ value }}" {% if selected_order == value %}selected{% endif %}>
+                {{ label }}
+            </option>
+
+            {% endfor %}
+
+        </select>
+
+        {% endif %}
     </div>
 
 
@@ -583,7 +597,7 @@
 
     document.addEventListener(
         "click",
-        function(event) {
+        function (event) {
 
             if (!event.target.closest(".actions-menu")) {
 
@@ -597,5 +611,20 @@
 
         }
     );
+
+    function changeOrder(order) {
+
+        const url =
+            new URL(window.location.href);
+
+        url.searchParams.set(
+            "order",
+            order
+        );
+
+        window.location.href =
+            url.toString();
+
+    }
 </script>
 {% endblock %}
