@@ -6,6 +6,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+    <link rel="icon" type="image/png" href="{% static 'img/favicon.png' %}">
     <title>{% block title %}QuoteDesk{% endblock %}</title>
     {% block extra_css %}
     {% endblock %}
@@ -277,6 +278,32 @@
             color: var(--text-light);
         }
 
+        .dashboard-page {
+            max-width: 1500px;
+        }
+
+        .dashboard-header h1 {
+            font-size: 48px;
+        }
+
+        .metric-card {
+            padding: 28px 30px;
+        }
+
+        .metric-card .metric-value {
+            font-size: 30px;
+        }
+
+        .chart-area {
+            height: 360px;
+        }
+
+        .pending-table th,
+        .pending-table td {
+            font-size: 16px;
+            padding: 16px 14px;
+        }
+
         .user-info {
             display: flex;
             align-items: center;
@@ -462,6 +489,62 @@
 
         .sidebar-logout:hover {
             background: rgba(255, 255, 255, .08);
+        }
+
+        /* títulos dos cards */
+        .dashboard-card-title {
+            font-size: 32px;
+        }
+
+        /* -------- ATIVIDADE RECENTE -------- */
+        .activity-item-title {
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        .activity-item-subtitle {
+            font-size: 16px;
+        }
+
+        .activity-item-time {
+            font-size: 15px;
+        }
+
+        /* -------- ORÇAMENTOS PENDENTES -------- */
+        .pending-table th {
+            font-size: 16px;
+            font-weight: 700;
+        }
+
+        .pending-table td {
+            font-size: 17px;
+        }
+
+        .pending-table td strong,
+        .pending-table td b {
+            font-size: 18px;
+        }
+
+        /* -------- AÇÕES RÁPIDAS -------- */
+        .quick-action-card .action-title {
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .quick-action-card .action-text {
+            font-size: 15px;
+            line-height: 1.5;
+        }
+
+        .quick-action-card {
+            min-height: 130px;
+            padding: 20px;
+        }
+
+        .recent-activity-card h2,
+        .pending-card h2,
+        .quick-actions-card h2 {
+            font-size: 30px;
         }
 
         /* =========================
