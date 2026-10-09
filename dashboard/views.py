@@ -45,6 +45,8 @@ def dashboard(request):
 
         selected_year = selected_date.year
         selected_month_number = selected_date.month
+        if not 2 <= selected_year <= 9998:
+            raise ValueError("Ano fora do intervalo suportado")
 
     except ValueError:
         selected_year = now.year

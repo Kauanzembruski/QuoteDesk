@@ -7,6 +7,11 @@ Orçamentos | QuoteDesk
 
 {% block extra_css %}
 <style>
+    .expired-badge {
+        background: #fff3e8;
+        color: #c66a00;
+        border: 1px solid #ffd6ad;
+    }
     .quote-list-page {
         max-width: 1180px;
         margin: 0 auto;
@@ -322,6 +327,8 @@ Orçamentos | QuoteDesk
 
 {% block content %}
 
+{% include "quote/feedback.html" %}
+
 <div class="quote-list-page">
 
 
@@ -455,6 +462,7 @@ Orçamentos | QuoteDesk
                         <span class="status status-{{ quote.status }}">
                             {{ quote.get_status_display }}
                         </span>
+                        {% if quote.is_expired %}<span class="status expired-badge">Expirado</span>{% endif %}
 
                     </td>
 
@@ -477,6 +485,7 @@ Orçamentos | QuoteDesk
                                 Ver
                             </a>
 
+                            {% if not quote.is_locked %}
                             <a href="{% url 'quote:quote_update' quote.pk %}" class="btn-action">
                                 Editar
                             </a>
@@ -484,6 +493,7 @@ Orçamentos | QuoteDesk
                             <a href="{% url 'quote:quote_delete' quote.pk %}" class="btn-action">
                                 Excluir
                             </a>
+                            {% endif %}
 
                         </div>
 

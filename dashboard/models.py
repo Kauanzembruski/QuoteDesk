@@ -10,6 +10,8 @@ class ActivityLog(models.Model):
         QUOTE_DELETED = "quote_deleted", "Orçamento excluído"
         QUOTE_APPROVED = "quote_approved", "Orçamento aprovado"
         QUOTE_SENT = "quote_sent", "Orçamento enviado"
+        QUOTE_REJECTED = "quote_rejected", "Orçamento rejeitado"
+        QUOTE_CANCELLED = "quote_cancelled", "Orçamento cancelado"
 
         CUSTOMER_CREATED = "customer_created", "Cliente cadastrado"
         CUSTOMER_UPDATED = "customer_updated", "Cliente atualizado"

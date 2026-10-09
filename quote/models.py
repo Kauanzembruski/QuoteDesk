@@ -2,6 +2,7 @@ from decimal import Decimal
 
 from django.conf import settings
 from django.db import models
+from django.utils import timezone
 
 from customer.models import Customer
 from catalog.models import (
@@ -130,8 +131,46 @@ class Quote(models.Model):
 
     updated_at = models.DateTimeField(
         auto_now=True,
+    )  
+
+    validity_days = models.PositiveIntegerField(
+        default=10,
+        verbose_name="Validade em dias",
     )
 
+    valid_until = models.DateField(
+        null=True,
+        blank=True,
+    )
+
+    commercial_notes = models.TextField(
+        blank=True,
+        verbose_name="Observações comerciais",
+    )
+
+
+    def allowed_statuses(self):
+        transitions = {
+            self.Status.DRAFT: (
+                self.Status.SENT, self.Status.CANCELLED,
+            ),
+            self.Status.SENT: (
+                self.Status.APPROVED, self.Status.REJECTED, self.Status.CANCELLED,
+            ),
+        }
+        return (self.status, *transitions.get(self.status, ()))
+
+    @property
+    def is_expired(self):
+        if not self.valid_until:
+            return False
+        if self.status not in (self.Status.DRAFT, self.Status.SENT):
+            return False
+        return timezone.localdate() > self.valid_until
+
+    @property
+    def is_locked(self):
+        return self.status in (self.Status.CANCELLED, self.Status.REJECTED)
 
     def calculate_total(self):
 

@@ -1,6 +1,7 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, redirect, render
 from django.db.models import Q
+from django.db.models.deletion import ProtectedError
 
 from .forms import CustomerForm
 from customer.models import Customer
@@ -19,7 +20,7 @@ def customer_list(request):
     if search:
         customers = customers.filter(
             Q(name__icontains=search)
-            | Q(cpf_cnpj__icontains=search)
+            | Q(document__icontains=search)
             | Q(phone__icontains=search)
             | Q(email__icontains=search)
         )
@@ -151,7 +152,13 @@ def customer_delete(request, pk):
         customer_id = customer.pk
         customer_name = str(customer)
 
-        customer.delete()
+        try:
+            customer.delete()
+        except ProtectedError:
+            return render(request, "customer/confirm_delete.html", {
+                "customer": customer,
+                "deletion_error": "Este cliente está vinculado a um orçamento e não pode ser excluído.",
+            })
 
         log_activity(
             request.user,

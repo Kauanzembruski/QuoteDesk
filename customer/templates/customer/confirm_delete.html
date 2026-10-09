@@ -338,6 +338,7 @@ Excluir Cliente | QuoteDesk
         </div>
 
         <form method="post">
+            {% if deletion_error %}<p role="alert">{{ deletion_error }}</p>{% endif %}
 
             {% csrf_token %}
 

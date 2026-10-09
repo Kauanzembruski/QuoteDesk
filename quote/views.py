@@ -1,13 +1,16 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, get_object_or_404
-from django.db import models
-from .forms import QuoteModelForm
+from django.db import models, transaction
 from .models import Quote
 from dashboard.models import ActivityLog
 from dashboard.utils import log_activity
+from datetime import timedelta
+from django.utils import timezone
+from .forms import QuoteModelForm, QuoteUpdateForm
 
 @login_required
+@transaction.atomic
 def quote_create(request):
 
     if request.method == "POST":
@@ -43,6 +46,14 @@ def quote_create(request):
                 if quote.water_treatment
                 else 0
             )
+            created_date = timezone.localtime(
+                quote.created_at
+            ).date()
+
+            quote.valid_until = (
+                created_date
+                + timedelta(days=quote.validity_days)
+            )
 
             quote.save()
             log_activity(
@@ -61,6 +72,11 @@ def quote_create(request):
                 "quote:quote_detail",
                 pk=quote.pk
             )
+
+        if "status" in form.errors:
+            messages.error(request, "Esta alteração de status não é permitida.")
+        else:
+            messages.error(request, "Não foi possível salvar o orçamento. Corrija os campos indicados.")
 
     else:
         form = QuoteModelForm()
@@ -134,17 +150,22 @@ def quote_list(request):
     )
 
 @login_required
+@transaction.atomic
 def quote_update(request, pk):
 
     quote = get_object_or_404(
-        Quote,
+        Quote.objects.select_for_update(),
         pk=pk
     )
 
     old_status = quote.status
 
+    if quote.is_locked:
+        messages.error(request, "Orçamentos cancelados ou rejeitados não podem ser alterados.")
+        return redirect("quote:quote_detail", pk=quote.pk)
+
     if request.method == "POST":
-        form = QuoteModelForm(
+        form = QuoteUpdateForm(
             request.POST,
             instance=quote
         )
@@ -178,40 +199,29 @@ def quote_update(request, pk):
                 else 0
             )
 
+            quote.validity_days = 10
+            quote.valid_until = (
+                timezone.localdate()
+                + timedelta(days=10)
+            )
             quote.save()
-            if (
-                old_status != quote.status
-                and quote.status == Quote.Status.APPROVED
-            ):
-                log_activity(
-                    request.user,
-                    ActivityLog.Type.QUOTE_APPROVED,
-                    f"Orçamento #{quote.pk} aprovado",
-                    f"Cliente: {quote.customer}",
-                    quote.pk,
-                )
-
-            elif (
-                old_status != quote.status
-                and quote.status == Quote.Status.SENT
-            ):
-                log_activity(
-                    request.user,
-                    ActivityLog.Type.QUOTE_SENT,
-                    f"Orçamento #{quote.pk} enviado",
-                    f"Cliente: {quote.customer}",
-                    quote.pk,
-                )
-
-            else:
-                log_activity(
-                    request.user,
-                    ActivityLog.Type.QUOTE_UPDATED,
-                    f"Orçamento #{quote.pk} atualizado",
-                    f"Cliente: {quote.customer}",
-                    quote.pk,
-                )
-            
+            status_logs = {
+                Quote.Status.SENT: (ActivityLog.Type.QUOTE_SENT, "enviado"),
+                Quote.Status.APPROVED: (ActivityLog.Type.QUOTE_APPROVED, "aprovado"),
+                Quote.Status.REJECTED: (ActivityLog.Type.QUOTE_REJECTED, "rejeitado"),
+                Quote.Status.CANCELLED: (ActivityLog.Type.QUOTE_CANCELLED, "cancelado"),
+            }
+            activity_type, action = (
+                status_logs[quote.status] if old_status != quote.status
+                else (ActivityLog.Type.QUOTE_UPDATED, "atualizado")
+            )
+            log_activity(
+                request.user,
+                activity_type,
+                f"Orçamento #{quote.pk} {action}",
+                f"Cliente: {quote.customer}",
+                quote.pk,
+            )
 
             messages.success(
                 request,
@@ -223,8 +233,13 @@ def quote_update(request, pk):
                 pk=quote.pk
             )
 
+        if "status" in form.errors:
+            messages.error(request, "Esta alteração de status não é permitida.")
+        else:
+            messages.error(request, "Não foi possível salvar o orçamento. Corrija os campos indicados.")
+
     else:
-        form = QuoteModelForm(
+        form = QuoteUpdateForm(
             instance=quote
         )
 
@@ -238,11 +253,16 @@ def quote_update(request, pk):
     )
 
 @login_required
+@transaction.atomic
 def quote_delete(request, pk):
     quote = get_object_or_404(
-        Quote,
+        Quote.objects.select_for_update(),
         pk=pk
     )
+
+    if quote.is_locked:
+        messages.error(request, "Orçamentos cancelados ou rejeitados não podem ser excluídos.")
+        return redirect("quote:quote_detail", pk=quote.pk)
 
     if request.method == "POST":
 

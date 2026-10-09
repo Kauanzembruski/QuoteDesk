@@ -7,7 +7,6 @@ Editar Orçamento #{{ quote.pk }} | QuoteDesk
 
 {% block extra_css %}
 <style>
-
     .quote-update-page {
         max-width: 1180px;
         margin: 0 auto;
@@ -76,6 +75,33 @@ Editar Orçamento #{{ quote.pk }} | QuoteDesk
         align-items: start;
     }
 
+    .field-group textarea {
+        width: 100%;
+        min-height: 110px;
+
+        padding: 12px;
+
+        border: 1px solid #cfdbe7;
+        border-radius: 9px;
+
+        background: white;
+
+        color: #102b4c;
+
+        font-family: inherit;
+        font-size: 14px;
+
+        resize: vertical;
+        outline: none;
+    }
+
+    .field-group textarea:focus {
+        border-color: #0d8df0;
+
+        box-shadow:
+            0 0 0 3px rgba(13, 141, 240, .10);
+    }
+
 
     .card {
         background: white;
@@ -91,7 +117,7 @@ Editar Orçamento #{{ quote.pk }} | QuoteDesk
     }
 
 
-    .card + .card {
+    .card+.card {
         margin-top: 22px;
     }
 
@@ -231,11 +257,9 @@ Editar Orçamento #{{ quote.pk }} | QuoteDesk
         border: none;
         border-radius: 9px;
 
-        background: linear-gradient(
-            90deg,
-            #0876d8,
-            #0d8df0
-        );
+        background: linear-gradient(90deg,
+                #0876d8,
+                #0d8df0);
 
         color: white;
 
@@ -267,18 +291,23 @@ Editar Orçamento #{{ quote.pk }} | QuoteDesk
         }
 
     }
-
 </style>
 {% endblock %}
 
 
 {% block content %}
 
+{% include "quote/feedback.html" %}
+
 <div class="quote-update-page">
 
     <form method="post">
 
         {% csrf_token %}
+        {{ form.non_field_errors }}
+        {% for field in form %}
+        {% if field.errors %}<div role="alert">{{ field.label }}: {{ field.errors }}</div>{% endif %}
+        {% endfor %}
 
 
         <div class="page-header">
@@ -341,6 +370,43 @@ Editar Orçamento #{{ quote.pk }} | QuoteDesk
                             </label>
 
                             {{ form.pool }}
+
+                        </div>
+
+                        <div class="field-group full">
+
+                            <label for="{{ form.commercial_notes.id_for_label }}">
+                                Observações comerciais
+                            </label>
+
+                            {{ form.commercial_notes }}
+
+                            {% for error in form.commercial_notes.errors %}
+                            <span style="color: #c62828; font-size: 12px;">
+                                {{ error }}
+                            </span>
+                            {% endfor %}
+
+                        </div>
+
+                        <div class="field-group">
+
+                            <label for="{{ form.validity_days.id_for_label }}">
+                                Validade do orçamento
+                            </label>
+
+                            {{ form.validity_days }}
+
+                            <small style="color: #718399; font-size: 12px;">
+                                Quantidade de dias a partir da data de criação.
+                            </small>
+
+                            {% for error in form.validity_days.errors %}
+                            <span style="color: #c62828; font-size: 12px;">
+                                {{ error }}
+                            </span>
+                            {% endfor %}
+
 
                         </div>
 
@@ -407,17 +473,11 @@ Editar Orçamento #{{ quote.pk }} | QuoteDesk
 
                 <div class="actions">
 
-                    <a
-                        href="{% url 'quote:quote_detail' quote.pk %}"
-                        class="btn-cancel"
-                    >
+                    <a href="{% url 'quote:quote_detail' quote.pk %}" class="btn-cancel">
                         Cancelar
                     </a>
 
-                    <button
-                        type="submit"
-                        class="btn-save"
-                    >
+                    <button type="submit" class="btn-save">
                         Salvar alterações
                     </button>
 

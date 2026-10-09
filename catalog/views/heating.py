@@ -190,7 +190,7 @@ def heating_delete(request, pk):
             heating_name = str(heating)
             heating.delete()
         except ProtectedError:
-            deletion_error = "Este item est? vinculado a um or?amento e n?o pode ser exclu?do. Voc? pode desativ?-lo na edi??o."
+            deletion_error = "Este item está vinculado a um orçamento e não pode ser excluído. Você pode desativá-lo na edição."
         else:
             log_activity(
                 request.user,

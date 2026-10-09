@@ -362,6 +362,8 @@ Novo Orçamento | QuoteDesk
 
 {% block content %}
 
+{% include "quote/feedback.html" %}
+
 <div class="quote-page">
 
     <a href="{% url 'quote:quote_list' %}" class="back-link">
@@ -414,6 +416,10 @@ Novo Orçamento | QuoteDesk
     <form method="post">
 
         {% csrf_token %}
+        {{ form.non_field_errors }}
+        {% for field in form %}
+            {% if field.errors %}<div role="alert">{{ field.label }}: {{ field.errors }}</div>{% endif %}
+        {% endfor %}
 
         <div class="quote-layout">
 
@@ -448,11 +454,7 @@ Novo Orçamento | QuoteDesk
 
                         {{ form.customer }}
 
-                        {% for error in form.customer.errors %}
-                        <small style="color:#d93025;">
-                            {{ error }}
-                        </small>
-                        {% endfor %}
+
 
                     </div>
 
@@ -648,7 +650,8 @@ Novo Orçamento | QuoteDesk
                     </div>
 
 
-                    <div style="display:none;">
+                    <div class="field-group">
+                        <label for="{{ form.status.id_for_label }}">Status</label>
                         {{ form.status }}
                     </div>
 

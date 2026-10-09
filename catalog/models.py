@@ -1,4 +1,11 @@
+from decimal import Decimal
+
+from django.core.validators import MinValueValidator
 from django.db import models
+
+
+NON_NEGATIVE = MinValueValidator(0, message="O valor não pode ser negativo.")
+POSITIVE_MEASURE = MinValueValidator(Decimal("0.01"), message="A medida deve ser maior que zero.")
 
 # Create your models here.
 class PoolModel(models.Model):
@@ -7,16 +14,19 @@ class PoolModel(models.Model):
     )
 
     length = models.DecimalField(
+        validators=[POSITIVE_MEASURE],
         max_digits=5,
         decimal_places=2
     )
 
     width = models.DecimalField(
+        validators=[POSITIVE_MEASURE],
         max_digits=5,
         decimal_places=2
     )
 
     base_price = models.DecimalField(
+        validators=[NON_NEGATIVE],
         max_digits=10,
         decimal_places=2
     )
@@ -33,9 +43,12 @@ class PoolModel(models.Model):
 
     class Meta:
         constraints = [
+            models.CheckConstraint(condition=models.Q(base_price__gte=0), name="pool_price_non_negative"),
+            models.CheckConstraint(condition=models.Q(length__gt=0, width__gt=0), name="pool_dimensions_positive"),
             models.UniqueConstraint(
                 fields=["model", "length", "width"],
-                name="unique_pool_model_size"
+                name="unique_pool_model_size",
+                violation_error_message="Já existe uma piscina com este modelo e estas medidas.",
             )
         ]
 
@@ -55,11 +68,13 @@ class HeatingOption(models.Model):
     )
 
     measure = models.DecimalField(
+        validators=[POSITIVE_MEASURE],
         max_digits=10,
         decimal_places=2,
     )
 
     price = models.DecimalField(
+        validators=[NON_NEGATIVE],
         max_digits=10,
         decimal_places=2,
     )
@@ -70,9 +85,12 @@ class HeatingOption(models.Model):
 
     class Meta:
         constraints = [
+            models.CheckConstraint(condition=models.Q(price__gte=0), name="heating_price_non_negative"),
+            models.CheckConstraint(condition=models.Q(measure__gt=0), name="heating_measure_positive"),
             models.UniqueConstraint(
                 fields=["type", "measure"],
                 name="unique_heating_type_measure",
+                violation_error_message="Já existe um aquecimento com este tipo e esta medida.",
             )
         ]
 
@@ -100,6 +118,7 @@ class Lighting(models.Model):
     )
 
     price = models.DecimalField(
+        validators=[NON_NEGATIVE],
         max_digits=10,
         decimal_places=2,
         default=0,
@@ -112,6 +131,11 @@ class Lighting(models.Model):
     def __str__(self):
         return self.get_type_display()
 
+    class Meta:
+        constraints = [
+            models.CheckConstraint(condition=models.Q(price__gte=0), name="lighting_price_non_negative"),
+        ]
+
 
 class Waterfall(models.Model):
     model = models.CharField(
@@ -123,6 +147,7 @@ class Waterfall(models.Model):
         return self.model
 
     price = models.DecimalField(
+        validators=[NON_NEGATIVE],
         max_digits=10,
         decimal_places=2,
     )
@@ -130,6 +155,11 @@ class Waterfall(models.Model):
     active = models.BooleanField(
         default=True,
     )
+
+    class Meta:
+        constraints = [
+            models.CheckConstraint(condition=models.Q(price__gte=0), name="waterfall_price_non_negative"),
+        ]
 
 
 class WaterTreatment(models.Model):
@@ -143,6 +173,7 @@ class WaterTreatment(models.Model):
             unique=True
         )
     price = models.DecimalField(
+        validators=[NON_NEGATIVE],
         max_digits=10,
         decimal_places=2,
     )
@@ -152,3 +183,8 @@ class WaterTreatment(models.Model):
 
     def __str__(self):
         return f"{self.get_type_display()} - R$ {self.price}"
+
+    class Meta:
+        constraints = [
+            models.CheckConstraint(condition=models.Q(price__gte=0), name="treatment_price_non_negative"),
+        ]

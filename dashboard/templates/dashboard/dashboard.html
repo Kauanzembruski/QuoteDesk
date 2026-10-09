@@ -7,6 +7,11 @@ Dashboard | QuoteDesk
 
 {% block extra_css %}
 <style>
+    .expired-badge {
+        background: #fff3e8;
+        color: #c66a00;
+        border: 1px solid #ffd6ad;
+    }
 
     .dashboard-page {
         max-width: 1480px;
@@ -1271,6 +1276,7 @@ Dashboard | QuoteDesk
                                         {{ quote.get_status_display }}
 
                                     </span>
+                                    {% if quote.is_expired %}<span class="status-badge expired-badge">Expirado</span>{% endif %}
 
                                 </td>
 

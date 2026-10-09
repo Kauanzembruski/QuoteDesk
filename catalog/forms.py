@@ -4,13 +4,14 @@ from .models import (
     PoolModel,
     HeatingOption,
     Waterfall,
-    Lighting
+    Lighting,
+    WaterTreatment,
 )
 
 
 class PoolModelForm(forms.ModelForm):
     class Meta:
-        labels = {"model": "Modelo", "length": "Comprimento (m)", "width": "Largura (m)", "base_price": "Pre?o base (R$)", "active": "Ativo","image": "Imagem"}
+        labels = {"model": "Modelo", "length": "Comprimento (m)", "width": "Largura (m)", "base_price": "Preço base (R$)", "active": "Ativo","image": "Imagem"}
         model = PoolModel
 
         fields = [
@@ -28,7 +29,7 @@ class PoolModelForm(forms.ModelForm):
 
 class HeatingModelForm(forms.ModelForm):
     class Meta:
-        labels = {"type": "Tipo", "measure": "Medida", "price": "Pre?o (R$)", "active": "Ativo"}
+        labels = {"type": "Tipo", "measure": "Medida", "price": "Preço (R$)", "active": "Ativo"}
         help_texts = {"measure": "Informe em metros para solar ou BTU para trocador de calor."}
         model = HeatingOption
 
@@ -42,6 +43,7 @@ class HeatingModelForm(forms.ModelForm):
 class WaterfallModelForm(forms.ModelForm):
     class Meta:
         model = Waterfall
+        error_messages = {"model": {"unique": "Este modelo já está cadastrado."}}
 
         fields = [
             "model",
@@ -58,6 +60,7 @@ class WaterfallModelForm(forms.ModelForm):
 class LightingModelForm(forms.ModelForm):
     class Meta:
         model = Lighting
+        error_messages = {"type": {"unique": "Este tipo já está cadastrado."}}
 
         fields = [
             "type",
@@ -70,3 +73,20 @@ class LightingModelForm(forms.ModelForm):
             "price": "Preço",
             "active": "Ativo",
         }
+
+
+class LightingPriceForm(forms.ModelForm):
+    class Meta:
+        model = Lighting
+        fields = ["price"]
+        error_messages = {"price": {
+            "required": "Informe o preço.",
+            "invalid": "Informe um preço válido.",
+            "max_digits": "O preço informado excede o limite permitido.",
+            "max_decimal_places": "Informe o preço com no máximo duas casas decimais.",
+        }}
+
+
+class TreatmentPriceForm(LightingPriceForm):
+    class Meta(LightingPriceForm.Meta):
+        model = WaterTreatment

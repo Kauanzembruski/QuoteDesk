@@ -7,6 +7,12 @@ Orçamento #{{ quote.pk }} | QuoteDesk
 
 {% block extra_css %}
 <style>
+    .status.expired-badge {
+        background: #fff3e8;
+        color: #c66a00;
+        border: 1px solid #ffd6ad;
+    }
+
     .quote-detail-page {
         max-width: 1050px;
         margin: 0 auto;
@@ -114,6 +120,20 @@ Orçamento #{{ quote.pk }} | QuoteDesk
             0 2px 8px rgba(21, 52, 82, 0.04);
     }
 
+    .right-column {
+        display: flex;
+        flex-direction: column;
+        gap: 24px;
+    }
+
+    .commercial-notes-card {
+        width: 100%;
+    }
+
+    .commercial-notes-text {
+        text-align: left;
+        line-height: 1.7;
+    }
 
     .detail-card h2 {
         margin: 0 0 20px;
@@ -183,10 +203,8 @@ Orçamento #{{ quote.pk }} | QuoteDesk
 
 
     .summary-card {
-        position: sticky;
-        top: 24px;
+        position: static;
     }
-
 
     .summary-total {
         display: flex;
@@ -228,21 +246,7 @@ Orçamento #{{ quote.pk }} | QuoteDesk
         ← Voltar para Orçamentos
     </a>
 
-    {% if messages %}
-    {% for message in messages %}
-
-    <div class="success-message">
-
-        <div class="success-icon">
-            ✓
-        </div>
-
-        {{ message }}
-
-    </div>
-
-    {% endfor %}
-    {% endif %}
+    {% include "quote/feedback.html" %}
 
 
     <div class="page-header">
@@ -252,10 +256,21 @@ Orçamento #{{ quote.pk }} | QuoteDesk
             <h1>
                 Orçamento #{{ quote.pk }}
             </h1>
-
             <p>
                 Criado em {{ quote.created_at|date:"d/m/Y H:i" }}
+                ·
+                <strong>
+                    {% if quote.is_expired %}
+                    Validade: Expirada em {{ quote.valid_until|date:"d/m/Y" }}
+                    {% elif quote.valid_until %}
+                    Validade: {{ quote.validity_days }} dias · válido até {{ quote.valid_until|date:"d/m/Y" }}
+                    {% else %}
+                    Validade não informada
+                    {% endif %}
+                </strong>
             </p>
+
+
 
         </div>
 
@@ -263,6 +278,7 @@ Orçamento #{{ quote.pk }} | QuoteDesk
         <span class="status">
             {{ quote.get_status_display }}
         </span>
+        {% if quote.is_expired %}<span class="status expired-badge">Expirado</span>{% endif %}
 
     </div>
 
@@ -432,6 +448,7 @@ Orçamento #{{ quote.pk }} | QuoteDesk
 
                     </span>
 
+
                 </div>
 
             </div>
@@ -441,91 +458,111 @@ Orçamento #{{ quote.pk }} | QuoteDesk
 
 
 
-        <aside class="detail-card summary-card">
+        <div class="right-column">
 
-            <h2>
-                Resumo financeiro
-            </h2>
+            <aside class="detail-card summary-card">
+
+                <h2>
+                    Resumo financeiro
+                </h2>
+
+                <div class="detail-row">
+
+                    <span class="detail-label">
+                        Piscina
+                    </span>
+
+                    <span class="detail-value">
+                        R$ {{ quote.pool_price }}
+                    </span>
+
+                </div>
 
 
-            <div class="detail-row">
+                <div class="detail-row">
 
-                <span class="detail-label">
-                    Piscina
-                </span>
+                    <span class="detail-label">
+                        Aquecimento
+                    </span>
 
-                <span class="detail-value">
-                    R$ {{ quote.pool_price }}
-                </span>
+                    <span class="detail-value">
+                        R$ {{ quote.heating_price }}
+                    </span>
+
+                </div>
+
+
+                <div class="detail-row">
+
+                    <span class="detail-label">
+                        Iluminação
+                    </span>
+
+                    <span class="detail-value">
+                        R$ {{ quote.lighting_price }}
+                    </span>
+
+                </div>
+
+
+                <div class="detail-row">
+
+                    <span class="detail-label">
+                        Cascata
+                    </span>
+
+                    <span class="detail-value">
+                        R$ {{ quote.waterfall_price }}
+                    </span>
+
+                </div>
+
+
+                <div class="detail-row">
+
+                    <span class="detail-label">
+                        Tratamento
+                    </span>
+
+                    <span class="detail-value">
+                        R$ {{ quote.water_treatment_price }}
+                    </span>
+
+                </div>
+
+
+                <div class="summary-total">
+
+                    <span>
+                        Total
+                    </span>
+
+                    <span>
+                        R$ {{ quote.total_price }}
+                    </span>
+
+                </div>
+
+            </aside>
+
+
+            {% if quote.commercial_notes %}
+
+            <div class="detail-card commercial-notes-card">
+
+                <h2>
+                    Observações comerciais
+                </h2>
+
+                <div class="detail-value commercial-notes-text">
+                    {{ quote.commercial_notes|linebreaksbr }}
+                </div>
 
             </div>
 
+            {% endif %}
 
-            <div class="detail-row">
-
-                <span class="detail-label">
-                    Aquecimento
-                </span>
-
-                <span class="detail-value">
-                    R$ {{ quote.heating_price }}
-                </span>
-
-            </div>
-
-
-            <div class="detail-row">
-
-                <span class="detail-label">
-                    Iluminação
-                </span>
-
-                <span class="detail-value">
-                    R$ {{ quote.lighting_price }}
-                </span>
-
-            </div>
-
-
-            <div class="detail-row">
-
-                <span class="detail-label">
-                    Cascata
-                </span>
-
-                <span class="detail-value">
-                    R$ {{ quote.waterfall_price }}
-                </span>
-
-            </div>
-
-
-            <div class="detail-row">
-
-                <span class="detail-label">
-                    Tratamento
-                </span>
-
-                <span class="detail-value">
-                    R$ {{ quote.water_treatment_price }}
-                </span>
-
-            </div>
-
-
-            <div class="summary-total">
-
-                <span>
-                    Total
-                </span>
-
-                <span>
-                    R$ {{ quote.total_price }}
-                </span>
-
-            </div>
-
-        </aside>
+        </div>
 
 
     </div>

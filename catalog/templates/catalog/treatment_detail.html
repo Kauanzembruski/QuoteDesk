@@ -224,6 +224,7 @@ Tratamento da Água | QuoteDesk
 
 
 {% block content %}
+{% for message in messages %}<p role="alert" class="{{ message.tags }}">{{ message }}</p>{% endfor %}
 
 <div class="treatment-page">
 
@@ -274,7 +275,7 @@ Tratamento da Água | QuoteDesk
 
     <div class="treatment-grid">
 
-        <form method="post" class="treatment-card">
+        <form method="post" action="{% url 'catalog:treatment_update' chlorine.pk %}" class="treatment-card">
 
             {% csrf_token %}
 
@@ -327,7 +328,7 @@ Tratamento da Água | QuoteDesk
         </form>
 
 
-        <form method="post" class="treatment-card">
+        <form method="post" action="{% url 'catalog:treatment_update' ozone.pk %}" class="treatment-card">
 
             {% csrf_token %}
 
