@@ -8,6 +8,11 @@ from dashboard.utils import log_activity
 from datetime import timedelta
 from django.utils import timezone
 from .forms import QuoteModelForm, QuoteUpdateForm
+from django.http import HttpResponse
+from django.template.loader import render_to_string
+from weasyprint import HTML
+from decimal import Decimal
+
 
 @login_required
 @transaction.atomic
@@ -293,3 +298,101 @@ def quote_delete(request, pk):
             "quote": quote,
         }
     )
+
+
+@login_required
+def quote_pdf(request, pk):
+
+    quote = get_object_or_404(
+        Quote.objects.select_related(
+            "customer",
+            "pool",
+            "heating",
+            "lighting",
+            "waterfall",
+            "water_treatment",
+            "created_by",
+        ),
+        pk=pk,
+    )
+
+    # ==========================================
+    # CONDIÇÕES DE PAGAMENTO
+    # ==========================================
+
+    total = quote.total_price
+
+    # À vista - 5% de desconto
+    cash_discount_percent = Decimal("5")
+    cash_total = total * Decimal("0.95")
+
+    # Entrada de 30% + 6x
+    entry_percent = Decimal("30")
+    entry_value = total * Decimal("0.30")
+
+    remaining_value = total - entry_value
+
+    installment_6 = (
+        remaining_value
+        / Decimal("6")
+    )
+
+    # Cartão em até 10x
+    card_installment_10 = (
+        total
+        / Decimal("10")
+    )
+
+
+    # ==========================================
+    # CONTEXTO DO PDF
+    # ==========================================
+
+    context = {
+        "quote": quote,
+
+        "cash_discount_percent": cash_discount_percent,
+        "cash_total": cash_total,
+
+        "entry_percent": entry_percent,
+        "entry_value": entry_value,
+        "installment_6": installment_6,
+
+        "card_installment_10": card_installment_10,
+    }
+
+
+    # ==========================================
+    # RENDERIZA HTML
+    # ==========================================
+
+    html_string = render_to_string(
+        "quote/quote_pdf.html",
+        context,
+    )
+
+
+    # ==========================================
+    # GERA PDF
+    # ==========================================
+
+    pdf = HTML(
+        string=html_string,
+        base_url=request.build_absolute_uri("/"),
+    ).write_pdf()
+
+
+    # ==========================================
+    # RESPOSTA
+    # ==========================================
+
+    response = HttpResponse(
+        pdf,
+        content_type="application/pdf",
+    )
+
+    response["Content-Disposition"] = (
+        f'inline; filename="orcamento-{quote.pk}.pdf"'
+    )
+
+    return response

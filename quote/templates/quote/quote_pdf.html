@@ -1,0 +1,731 @@
+{% load static i18n %}
+{% language "pt-br" %}
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <title>
+        Orçamento #{{ quote.pk|stringformat:"04d" }}
+    </title>
+
+    <style>
+        @page {
+            size: A4;
+            margin: 18mm 20mm 20mm;
+            @bottom-left {
+                content: "Acquasul Piscinas - Proposta comercial gerada pelo QuoteDesk";
+                font-family: "DejaVu Sans", sans-serif; font-size: 7pt; color: #718399;
+                border-top: .6pt solid #e1e8ee; padding-top: 10pt; margin-top: 14pt; vertical-align: top;
+            }
+            @bottom-right {
+                content: "P\00e1gina " counter(page);
+                font-family: "DejaVu Sans", sans-serif; font-size: 7pt; color: #718399;
+                border-top: .6pt solid #e1e8ee; padding-top: 10pt; margin-top: 14pt; vertical-align: top;
+            }
+            @bottom-center { content: ""; border-top: .6pt solid #e1e8ee; margin-top: 14pt; }
+        }
+        * { box-sizing: border-box; }
+        body { margin: 0; font-family: "DejaVu Sans", sans-serif; color: #294563; font-size: 9.4pt; line-height: 1.38; }
+        body::before { content: ""; position: fixed; top: -18mm; left: -20mm; right: -20mm; height: 11pt; background: #198dcc; }
+        .section { margin-top: 20pt; }
+        .section-title { margin: 0 0 7pt; color: #102c4e; font-size: 13pt; font-weight: 700; }
+        .muted { color: #718399; }
+        .header-top { display: table; width: 100%; margin: 0 0 21pt; height: 45pt; }
+        .logo-left, .logo-right { display: table-cell; width: 50%; vertical-align: middle; }
+        .logo-left { padding-left: 12pt; }
+        .logo-right { text-align: right; padding-right: 12pt; }
+        .logo-acquasul { width: 153pt; height: 45pt; object-fit: contain; }
+        .logo-fibersul { width: 135pt; height: 39pt; object-fit: contain; }
+        .proposal-header { display: table; width: 100%; }
+        .proposal-title-area, .proposal-meta { display: table-cell; vertical-align: middle; }
+        .proposal-title-area { width: 68%; }
+        .proposal-title { margin: 0; padding-left: 12pt; color: #102c4e; font-size: 22pt; line-height: 1.2; white-space: nowrap; }
+        .proposal-meta { width: 32%; padding-left: 5pt; color: #718399; font-size: 7.8pt; line-height: 1.35; }
+        .proposal-meta strong { color: #168dcc; font-weight: 400; }
+        .proposal-subtitle { margin-top: 10pt; color: #718399; font-size: 8.5pt; }
+        .proposal-notice { margin: 16pt 12pt; padding: 6pt 8pt; border: .6pt solid #f4c787; background: #fff7eb; color: #718399; font-size: 7.8pt; }
+        table { border-spacing: 0; }
+        .client-table { width: calc(100% - 24pt); margin: 16pt 12pt 0; border-collapse: collapse; table-layout: fixed; }
+        .client-table td { border: .6pt solid #d8e2ec; padding: 0; vertical-align: top; }
+        .client-table td:first-child { width: 38.5%; }
+        .client-table td:nth-child(2) { width: 29%; }
+        .client-label { padding: 6pt 9pt; border-bottom: .6pt solid #e5ebf0; color: #718399; font-size: 7.5pt; font-weight: 700; text-transform: uppercase; }
+        .client-value { padding: 6pt 9pt; color: #102c4e; font-size: 10pt; font-weight: 700; overflow-wrap: anywhere; }
+        .pool-box { display: table; table-layout: fixed; width: calc(100% - 24pt); margin: 0 12pt; border: .6pt solid #d8e2ec; }
+        .pool-photo, .pool-info { display: table-cell; vertical-align: middle; }
+        .pool-photo { width: 56%; padding: 9pt; }
+        .pool-photo img, .pool-placeholder { display: block; width: 100%; height: 90pt; object-fit: cover; border-radius: 4pt 0 0 0; }
+        .pool-placeholder { background: #eef3f7; color: #718399; text-align: center; line-height: 90pt; font-size: 8.5pt; }
+        .pool-info { width: 44%; padding: 6pt 8pt 6pt 4pt; }
+        .pool-info-table { width: 100%; border-collapse: collapse; }
+        .pool-info-table td { padding: 5pt 2pt; border-bottom: .6pt solid #e5ebf0; vertical-align: top; }
+        .pool-info-table tr:last-child td { border-bottom: 0; }
+        .pool-info-label { width: 40%; color: #718399; font-size: 7.5pt; line-height: 1.2; font-weight: 700; text-transform: uppercase; }
+        .pool-info-value { color: #102c4e; font-size: 10pt; line-height: 1.2; font-weight: 700; }
+        .items-table, .conditions-table { width: calc(100% - 24pt); margin: 0 12pt; border-collapse: collapse; }
+        .items-table th { padding: 5pt 8pt; background: #f3f8fc; color: #718399; font-size: 7.5pt; text-align: left; border: .6pt solid #d8e2ec; }
+        .items-table td { padding: 6pt 8pt; border: .6pt solid #e1e8ee; font-size: 9.4pt; }
+        .items-table .price { color: #102c4e; font-size: 10pt; text-align: right; font-weight: 700; white-space: nowrap; }
+        .bottom-financial { display: table; table-layout: fixed; width: calc(100% - 24pt); margin: 21pt 12pt 0; border-spacing: 3pt 0; }
+        .financial-summary, .payment-summary { display: table-cell; vertical-align: top; }
+        .financial-summary { width: 62%; border: .6pt solid #d8e2ec; background: #f5f9fd; }
+        .summary-row { display: table; width: 100%; padding: 7pt 9pt; min-height: 30pt; }
+        .summary-row span, .summary-row strong { display: table-cell; vertical-align: middle; }
+        .summary-row strong { text-align: right; font-size: 10pt; color: #102c4e; }
+        .summary-muted { width: 46%; color: #718399; font-size: 7.8pt; }
+        .summary-total { display: table; width: 100%; padding: 8pt 9pt; border-top: 1.2pt solid #168dcc; color: #102c4e; font-size: 10pt; font-weight: 700; }
+        .summary-total span, .summary-total strong { display: table-cell; vertical-align: middle; }
+        .summary-total span { font-size: 9pt; white-space: nowrap; padding-right: 8pt; }
+        .summary-total strong { text-align: right; font-size: 14pt; line-height: 1.15; white-space: nowrap; }
+        .payment-summary { width: 38%; padding: 7pt 9pt; border: .6pt solid #f4c787; background: #fffaf2; }
+        .payment-summary h3 { margin: 0 0 9pt; color: #102c4e; font-size: 10pt; }
+        .payment-option { margin: 0 0 5pt; font-size: 8pt; }
+        .payment-option:last-child { margin-bottom: 0; }
+        .payment-option strong { color: #102c4e; }
+        .payment-option span, .payment-option b { display: block; font-weight: 400; }
+        .page-break { break-before: page; height: 0; }
+        .page-two-title { margin: 0 0 3pt; color: #102c4e; font-size: 22pt; line-height: 1.25; }
+        .page-two-subtitle { margin-bottom: 19pt; color: #718399; font-size: 8.5pt; }
+        .included-box { display: table; table-layout: fixed; width: calc(100% - 32pt); margin: 0 16pt 21pt; padding: 10pt 13pt; background: #f5f9fd; border: .6pt solid #d8e2ec; }
+        .included-column { display: table-cell; width: 50%; vertical-align: top; }
+        .included-column:first-child { padding-right: 12pt; }
+        .included-column:last-child { padding-left: 12pt; }
+        .included-list { margin: 0; padding-left: 7pt; }
+        .included-list li { margin: 0; font-size: 8.5pt; line-height: 11.5pt; }
+        .notes-box, .responsibility-box { margin: 0 12pt; padding: 8pt 10pt; border: .6pt solid #d8e2ec; }
+        .notes-box { font-size: 8.5pt; overflow-wrap: anywhere; }
+        .responsibility-box { background: #fff5f2; border-color: #f1c5b9; }
+        .conditions-table td { padding: 7pt 9pt; border: .6pt solid #d8e2ec; }
+        .conditions-table .client-label { width: 21%; font-size: 7.5pt; }
+        .conditions-table strong { color: #102c4e; font-size: 10pt; }
+        .company-box { display: table; table-layout: fixed; width: calc(100% - 24pt); margin: 24pt 12pt 0; padding: 9pt 10pt; background: #f3f8fc; border: .6pt solid #d8e2ec; }
+        .seller-box, .company-info { display: table-cell; vertical-align: top; font-size: 9.4pt; line-height: 13pt; }
+        .seller-box { width: 42%; padding-right: 16pt; }
+        .company-info { width: 58%; }
+        .seller-box strong, .company-info strong { font-weight: 400; }
+        .pool-box, .bottom-financial, .included-box, .company-box, tr { break-inside: avoid; }
+        h1, h2, h3 { break-after: avoid; }
+    </style>
+
+</head>
+
+<body>
+
+    <!-- =====================================================
+         PÁGINA 1
+    ====================================================== -->
+
+    <div class="header-top">
+
+        <div class="logo-left">
+
+            <img
+                src="{% static 'img/logo_acquasul.png' %}"
+                class="logo-acquasul"
+                alt="Acquasul"
+            >
+
+        </div>
+
+        <div class="logo-right">
+
+            <img
+                src="{% static 'img/logo_fibersul.png' %}"
+                class="logo-fibersul"
+                alt="Fibersul"
+            >
+
+        </div>
+
+    </div>
+
+    <div class="proposal-header">
+
+        <div class="proposal-title-area">
+
+            <h1 class="proposal-title">
+                PROPOSTA COMERCIAL
+            </h1>
+
+        </div>
+
+        <div class="proposal-meta">
+
+            Orçamento #{{ quote.pk|stringformat:"04d" }}
+
+            <br>
+
+            Emitido em {{ quote.created_at|date:"d/m/Y" }}
+
+            <br>
+
+            <strong>
+                Válido até {{ quote.valid_until|date:"d/m/Y" }}
+            </strong>
+
+        </div>
+
+    </div>
+
+    <div class="proposal-subtitle">Piscina Fibersul com equipamentos, instalação e opcionais selecionados.</div>
+    <div class="proposal-notice">PROPOSTA COMERCIAL - equipamentos, instalação e opcionais conforme condições descritas neste orçamento.</div>
+
+    <!-- CLIENTE -->
+
+    <table class="client-table">
+
+        <tr>
+
+            <td>
+
+                <div class="client-label">
+                    Cliente
+                </div>
+
+                <div class="client-value">
+                    {{ quote.customer.name|title }}
+                </div>
+
+            </td>
+
+            <td>
+
+                <div class="client-label">
+                    Telefone
+                </div>
+
+                <div class="client-value">
+                    {% with phone=quote.customer.phone|cut:" "|cut:"("|cut:")"|cut:"-"|cut:"."|cut:"+" %}
+                        {% if phone|length == 11 %}
+                            ({{ phone|slice:":2" }}) {{ phone|slice:"2:3" }} {{ phone|slice:"3:7" }}-{{ phone|slice:"7:" }}
+                        {% elif phone|length == 10 %}
+                            ({{ phone|slice:":2" }}) {{ phone|slice:"2:6" }}-{{ phone|slice:"6:" }}
+                        {% elif phone|length == 13 and phone|slice:":2" == "55" %}
+                            ({{ phone|slice:"2:4" }}) {{ phone|slice:"4:5" }} {{ phone|slice:"5:9" }}-{{ phone|slice:"9:" }}
+                        {% else %}
+                            {{ quote.customer.phone|default:"-" }}
+                        {% endif %}
+                    {% endwith %}
+                </div>
+
+            </td>
+
+            <td>
+
+                <div class="client-label">
+                    Cidade
+                </div>
+
+                <div class="client-value">
+                    {{ quote.customer.city|default:"-" }}
+                </div>
+
+            </td>
+
+        </tr>
+
+    </table>
+
+    <!-- PISCINA -->
+
+    <div class="section">
+
+        <h2 class="section-title">
+            Piscina selecionada
+        </h2>
+
+        <div class="pool-box">
+
+            <div class="pool-photo">
+
+                {% if quote.pool.image %}
+
+                    <img
+                        src="{{ quote.pool.image.url }}"
+                        alt="{{ quote.pool.model }}"
+                    >
+
+                {% else %}
+
+                    <div class="pool-placeholder">
+                        Imagem da piscina
+                    </div>
+
+                {% endif %}
+
+            </div>
+
+            <div class="pool-info">
+
+                <table class="pool-info-table">
+
+                    <tr>
+
+                        <td class="pool-info-label">
+                            Modelo
+                        </td>
+
+                        <td class="pool-info-value">
+                            {{ quote.pool.model }}
+                        </td>
+
+                    </tr>
+
+                    <tr>
+
+                        <td class="pool-info-label">
+                            Medidas
+                        </td>
+
+                        <td class="pool-info-value">
+                            {{ quote.pool.length|floatformat:"2g" }} m x {{ quote.pool.width|floatformat:"2g" }} m
+                        </td>
+
+                    </tr>
+
+                    <tr>
+
+                        <td class="pool-info-label">
+                            Valor da piscina
+                        </td>
+
+                        <td class="pool-info-value">
+                            R$ {{ quote.pool_price|floatformat:"2g" }}
+                        </td>
+
+                    </tr>
+
+                    <tr>
+
+                        <td class="pool-info-label">
+                            Fabricante
+                        </td>
+
+                        <td class="pool-info-value">
+                            Fibersul
+                        </td>
+
+                    </tr>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- OPCIONAIS -->
+
+    <div class="section">
+
+        <h2 class="section-title">
+            Opcionais selecionados
+        </h2>
+
+        <table class="items-table">
+
+            <thead>
+
+                <tr>
+
+                    <th style="width:20%;">
+                        Item
+                    </th>
+
+                    <th style="width:58%;">
+                        Descrição
+                    </th>
+
+                    <th style="width:22%; text-align:right;">
+                        Valor
+                    </th>
+
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                {% if quote.heating %}
+
+                    <tr>
+
+                        <td>
+                            Aquecimento
+                        </td>
+
+                        <td>
+                            {{ quote.heating.get_type_display }} - {{ quote.heating.measure|floatformat:"-2g" }} {{ quote.heating.measure_unit }}
+                        </td>
+
+                        <td class="price">
+                            R$ {{ quote.heating_price|floatformat:"2g" }}
+                        </td>
+
+                    </tr>
+
+                {% endif %}
+
+                {% if quote.lighting %}
+
+                    <tr>
+
+                        <td>
+                            Iluminação
+                        </td>
+
+                        <td>
+                            {{ quote.lighting }}
+                        </td>
+
+                        <td class="price">
+                            R$ {{ quote.lighting_price|floatformat:"2g" }}
+                        </td>
+
+                    </tr>
+
+                {% endif %}
+
+                {% if quote.waterfall %}
+
+                    <tr>
+
+                        <td>
+                            Cascata
+                        </td>
+
+                        <td>
+                            {{ quote.waterfall }}
+                        </td>
+
+                        <td class="price">
+                            R$ {{ quote.waterfall_price|floatformat:"2g" }}
+                        </td>
+
+                    </tr>
+
+                {% endif %}
+
+                {% if quote.water_treatment %}
+
+                    <tr>
+
+                        <td>
+                            Tratamento
+                        </td>
+
+                        <td>
+                            {{ quote.water_treatment.get_type_display }}
+                        </td>
+
+                        <td class="price">
+                            R$ {{ quote.water_treatment_price|floatformat:"2g" }}
+                        </td>
+
+                    </tr>
+
+                {% endif %}
+
+                {% if not quote.heating and not quote.lighting and not quote.waterfall and not quote.water_treatment %}
+
+                    <tr>
+
+                        <td colspan="3" class="muted">
+                            Nenhum opcional selecionado.
+                        </td>
+
+                    </tr>
+
+                {% endif %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+    <!-- RESUMO + FORMAS DE PAGAMENTO -->
+
+    <div class="bottom-financial">
+
+        <div class="financial-summary">
+
+            <div class="summary-row">
+
+                <span>
+                    Subtotal
+                </span>
+
+                <strong>
+                    R$ {{ quote.total_price|floatformat:"2g" }}
+                </strong>
+
+            </div>
+
+            <div class="summary-row">
+
+                <span>
+                    Condição à vista
+                </span>
+
+                <span class="summary-muted">
+                    {{ cash_discount_percent|floatformat:"-2" }}% de desconto
+                </span>
+
+            </div>
+
+            <div class="summary-total">
+
+                <span>
+                    TOTAL DA PROPOSTA
+                </span>
+
+                <strong>
+                    R$ {{ quote.total_price|floatformat:"2g" }}
+                </strong>
+
+            </div>
+
+        </div>
+
+        <div class="payment-summary">
+
+            <h3>
+                Condições de pagamento
+            </h3>
+
+            <div class="payment-option">
+
+                <strong>
+                    À vista
+                </strong>
+
+                <span>
+                    {{ cash_discount_percent|floatformat:"-2" }}% de desconto
+                </span>
+
+                <b>
+                    R$ {{ cash_total|floatformat:"2g" }}
+                </b>
+
+            </div>
+
+            <div class="payment-option">
+
+                <strong>
+                    Entrada + 6x
+                </strong>
+
+                <span>
+                    Entrada de R$ {{ entry_value|floatformat:"2g" }}
+                </span>
+
+                <b>
+                    + 6x de R$ {{ installment_6|floatformat:"2g" }}
+                </b>
+
+            </div>
+
+            <div class="payment-option">
+
+                <strong>
+                    Cartão
+                </strong>
+
+                <span>
+                    Até 10 vezes
+                </span>
+
+                <b>
+                    10x de R$ {{ card_installment_10|floatformat:"2g" }}
+                </b>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- FOOTER PÁGINA 1 -->
+
+    <!-- =====================================================
+         PÁGINA 2
+    ====================================================== -->
+
+    <div class="page-break"></div>
+
+    <h1 class="page-two-title">
+        O que acompanha a piscina
+    </h1>
+
+    <div class="page-two-subtitle">
+        Itens incluídos no fornecimento padrão da piscina Fibersul.
+    </div>
+
+    <div class="included-box">
+
+        <div class="included-column">
+
+            <ul class="included-list">
+
+                <li>
+                    Filtro com moto-bomba e areia especial,
+                    dimensionados conforme normas da ABNT.
+                </li>
+
+                <li>
+                    Casa de máquinas em fiberglass.
+                </li>
+
+                <li>
+                    Conjunto de aspiração:
+                    aspirador, cabo, mangueira, ponteira e adaptador.
+                </li>
+
+                <li>
+                    Estojo para teste de cloro e pH.
+                </li>
+
+                <li>
+                    Peneira cata-folhas e escova de nylon.
+                </li>
+
+                <li>
+                    Clorador.
+                </li>
+
+            </ul>
+
+        </div>
+
+        <div class="included-column">
+
+            <ul class="included-list">
+
+                <li>
+                    Dispositivos de retorno e aspiração.
+                </li>
+
+                <li>
+                    Dreno antissucção conforme normas da ABNT.
+                </li>
+
+                <li>
+                    Kit de instalação completo:
+                    tubulação 50 mm, registros, conexões,
+                    cola e chave liga/desliga do motor.
+                </li>
+
+                <li>
+                    Frete até o local de instalação.
+                </li>
+
+                <li>
+                    Mão de obra para instalação da piscina.
+                </li>
+
+            </ul>
+
+        </div>
+
+    </div>
+
+    <!-- OBSERVAÇÕES -->
+
+    {% if quote.commercial_notes %}
+
+        <div class="section">
+
+            <h2 class="section-title">
+                Observações comerciais
+            </h2>
+
+            <div class="notes-box">
+                {{ quote.commercial_notes|linebreaksbr }}
+            </div>
+
+        </div>
+
+    {% endif %}
+
+    <!-- RESPONSABILIDADES -->
+
+    <div class="section">
+
+        <h2 class="section-title">
+            Responsabilidades do cliente
+        </h2>
+
+        <div class="responsibility-box">
+
+            Ficam por conta do cliente os serviços e materiais de preparação
+            do local, incluindo escavação, cimento, blocos, pó de brita para
+            base, nivelamento, aterramento e guindaste quando necessário,
+            com acompanhamento do técnico da Acquasul.
+
+        </div>
+
+    </div>
+
+    <div class="section">
+        <h2 class="section-title">Validade e condições gerais</h2>
+        <table class="conditions-table">
+            <tr><td class="client-label">Validade</td><td><strong>{{ quote.validity_days }} dias{% if quote.valid_until %} - válida até {{ quote.valid_until|date:"d/m/Y" }}{% endif %}</strong></td></tr>
+            <tr><td class="client-label">Pagamento</td><td>Condições definidas conforme forma de pagamento escolhida.</td></tr>
+            <tr><td class="client-label">Observação</td><td>Proposta referente à piscina, equipamentos e opcionais descritos neste documento.</td></tr>
+        </table>
+    </div>
+
+    <!-- CONTATO -->
+
+    <div class="company-box">
+
+        <div class="seller-box">
+
+            <strong>
+                Atenciosamente,
+            </strong>
+
+            <div>
+                Jarci Zembruski
+            </div>
+
+            <div>
+                (54) 9.9972-2462
+            </div>
+
+        </div>
+
+        <div class="company-info">
+
+            <strong>
+                Acquasul Piscinas
+            </strong>
+
+            <div>
+                BR 470 KM 127 Nº 150 - São Cristóvão - Nova Prata/RS
+            </div>
+
+            <div>
+                www.acquasulpiscinas.com.br
+            </div>
+
+            <div>
+                contatonp@acquasulpiscinas.com.br
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- FOOTER PÁGINA 2 -->
+
+</body>
+
+</html>
+{% endlanguage %}

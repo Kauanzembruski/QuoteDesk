@@ -106,6 +106,28 @@ Orçamento #{{ quote.pk }} | QuoteDesk
         align-items: start;
     }
 
+    .btn-pdf {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+
+        padding: 10px 16px;
+
+        background: #0b2545;
+        color: white;
+
+        border-radius: 8px;
+
+        text-decoration: none;
+        font-weight: 600;
+
+        transition: 0.2s;
+    }
+
+    .btn-pdf:hover {
+        background: #163d6b;
+        color: white;
+    }
 
     .detail-card {
         background: white;
@@ -271,10 +293,12 @@ Orçamento #{{ quote.pk }} | QuoteDesk
             </p>
 
 
-
+            
         </div>
-
-
+        <a href="{% url 'quote:quote_pdf' quote.pk %}" class="btn-pdf" target="_blank">
+            <i class="bi bi-file-earmark-pdf"></i>
+            Gerar PDF
+        </a>
         <span class="status">
             {{ quote.get_status_display }}
         </span>

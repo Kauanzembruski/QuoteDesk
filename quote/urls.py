@@ -7,6 +7,7 @@ from .views import (
     quote_create,
     quote_detail,
     quote_update,
+    quote_pdf,
     quote_delete,
 )
 
@@ -40,6 +41,12 @@ urlpatterns = [
         "<int:pk>/delete/",
         quote_delete,
         name="quote_delete",
+    ),
+
+    path(
+        "<int:pk>/pdf/",
+        quote_pdf,
+        name="quote_pdf",
     ),
 
 ]
