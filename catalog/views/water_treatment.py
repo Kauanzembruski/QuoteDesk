@@ -1,7 +1,7 @@
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.shortcuts import get_object_or_404, redirect, render
-
+from accounts.decorators import admin_required
 
 from dashboard.models import ActivityLog
 from dashboard.utils import log_activity
@@ -39,6 +39,7 @@ def treatment_detail(request):
 
 
 @login_required
+@admin_required
 def treatment_update(request, pk):
     treatment = get_object_or_404(
         WaterTreatment,

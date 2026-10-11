@@ -42,8 +42,10 @@
             </button>
             <div class="actions-dropdown">
                 <a href="{% url 'catalog:heating_detail' heating.pk %}">Visualizar</a>
+                {% if request.user.role == "admin" %}
                 <a href="{% url 'catalog:heating_update' heating.pk %}">Editar</a>
-                <a href="{% url 'catalog:heating_delete' heating.pk %}">Excluir</a>
+                <a href="{% url 'catalog:heating_delete' heating.pk %}"  class="delete-action">Excluir</a>
+{% endif %}
             </div>
         </div>
     </td>

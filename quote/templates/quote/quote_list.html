@@ -489,10 +489,12 @@ Orçamentos | QuoteDesk
                             <a href="{% url 'quote:quote_update' quote.pk %}" class="btn-action">
                                 Editar
                             </a>
+                            {% if request.user.role == "admin" %}
 
                             <a href="{% url 'quote:quote_delete' quote.pk %}" class="btn-action">
                                 Excluir
                             </a>
+{% endif %}
                             {% endif %}
 
                         </div>

@@ -13,7 +13,7 @@ from dashboard.models import ActivityLog
 
 class CatalogTests(TestCase):
     def setUp(self):
-        self.client.force_login(get_user_model().objects.create_user(username="catalog-test", password="test-password"))
+        self.client.force_login(get_user_model().objects.create_user(username="catalog-test", password="test-password", role="admin"))
         self.pool = PoolModel.objects.create(model="Modelo teste", length="6.00", width="3.00", base_price="10000.00")
         self.heating = HeatingOption.objects.create(type="heat_exchanger", measure="30000.00", price="5000.00")
 

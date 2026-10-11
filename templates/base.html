@@ -401,6 +401,43 @@
             flex-direction: column;
         }
 
+        .messages-container {
+            margin: 16px 0;
+        }
+
+        .alert {
+            padding: 12px 16px;
+
+            border-radius: 8px;
+
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .alert.error {
+            background: #fdecec;
+            color: #9f1d1d;
+            border: 1px solid #f3c2c2;
+        }
+
+        .alert.success {
+            background: #eaf7ee;
+            color: #247a3c;
+            border: 1px solid #bfe5ca;
+        }
+
+        .alert.warning {
+            background: #fff7e6;
+            color: #8a5a00;
+            border: 1px solid #f0d7a4;
+        }
+
+        .alert.info {
+            background: #eef5ff;
+            color: #245a9f;
+            border: 1px solid #c9dbf5;
+        }
+
         .sidebar-nav {
             flex: 1;
         }
@@ -740,3 +777,10 @@
 </body>
 
 </html>
+<script>
+    setTimeout(() => {
+        document.querySelectorAll(".alert").forEach(alert => {
+            alert.style.display = "none";
+        });
+    }, 4000);
+</script>

@@ -6,6 +6,7 @@ from django.db.models import Count, Sum
 from django.db.models.functions import TruncMonth
 from django.shortcuts import render
 from django.utils import timezone
+from quote.utils import quotes_for_user
 
 from quote.models import Quote
 from dashboard.models import ActivityLog
@@ -111,12 +112,14 @@ def dashboard(request):
         )
     )
 
+    base_quotes = quotes_for_user(request.user)
+
 
     # ==========================================
     # ORÇAMENTOS DO MÊS
     # ==========================================
 
-    month_quotes = Quote.objects.filter(
+    month_quotes = base_quotes.filter(
         created_at__range=(
             start_date,
             end_date
@@ -158,7 +161,7 @@ def dashboard(request):
     # ==========================================
 
     pending_list = (
-        Quote.objects
+        base_quotes
         .filter(
             status__in=[
                 Quote.Status.DRAFT,
@@ -178,7 +181,7 @@ def dashboard(request):
     # GRÁFICO
     # ==========================================
 
-    year_quotes = Quote.objects.filter(
+    year_quotes = base_quotes.filter(
         created_at__year=selected_year
     )
 

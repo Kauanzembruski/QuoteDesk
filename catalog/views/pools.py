@@ -7,6 +7,7 @@ from dashboard.utils import log_activity
 from catalog.forms import PoolModelForm
 from catalog.models import PoolModel
 from django.db.models import Q
+from accounts.decorators import admin_required
 
 
 @login_required
@@ -53,6 +54,7 @@ def pool_list(request):
 
 
 @login_required
+@admin_required
 def pool_create(request):
     if request.method == "POST":
         form = PoolModelForm(request.POST,request.FILES)
@@ -120,6 +122,7 @@ def pool_detail(request, pk):
     )
 
 @login_required
+@admin_required
 def pool_update(request, pk):
     pool = get_object_or_404(
         PoolModel,
@@ -177,6 +180,7 @@ def pool_update(request, pk):
 
 
 @login_required
+@admin_required
 def pool_delete(request, pk):
     pool = get_object_or_404(
         PoolModel,

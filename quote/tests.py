@@ -17,7 +17,7 @@ from .models import Quote
 class QuoteFlowTests(TestCase):
     def setUp(self):
         self.user = get_user_model().objects.create_user(username="seller")
-        self.editor = get_user_model().objects.create_user(username="editor")
+        self.editor = get_user_model().objects.create_user(username="editor", role="admin")
         self.client.force_login(self.user)
         self.customer = Customer.objects.create(name="Cliente", phone="123", city="Cidade")
         self.pool = PoolModel.objects.create(model="A", length=5, width=3, base_price="1000.10")
@@ -225,6 +225,8 @@ class QuoteFlowTests(TestCase):
                 self.assertEqual(ActivityLog.objects.count(), before)
 
     def test_delete_log_and_feedback(self):
+        self.user.role = "admin"
+        self.user.save()
         quote = self.create_quote()
         response = self.client.post(reverse("quote:quote_delete", args=[quote.pk]), follow=True)
         self.assertContains(response, "Orçamento excluído com sucesso.")
@@ -313,7 +315,8 @@ class QuoteExpirationDisplayTests(TestCase):
             reverse("dashboard:dashboard"),
         )
 
-    def test_expiration_display_preserves_status_metrics_and_logs(self):
+    @patch("django.utils.timezone.now", return_value=datetime(2026, 10, 19, 12, tzinfo=datetime_timezone.utc))
+    def test_expiration_display_preserves_status_metrics_and_logs(self, _now):
         original_updated_at = self.quote.updated_at
         with patch("quote.models.timezone.localdate", return_value=date(2026, 10, 19)):
             for url in self.pages():

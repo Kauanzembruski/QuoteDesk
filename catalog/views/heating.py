@@ -7,7 +7,7 @@ from dashboard.utils import log_activity
 
 from catalog.forms import HeatingModelForm
 from catalog.models import HeatingOption
-
+from accounts.decorators import admin_required
 
 @login_required
 def heating_list(request):
@@ -53,6 +53,7 @@ def heating_list(request):
 
 
 @login_required
+@admin_required
 def heating_create(request):
     if request.method == "POST":
         form = HeatingModelForm(request.POST)
@@ -121,6 +122,7 @@ def heating_detail(request, pk):
 
 
 @login_required
+@admin_required
 def heating_update(request, pk):
     heating = get_object_or_404(
         HeatingOption,
@@ -177,6 +179,7 @@ def heating_update(request, pk):
 
 
 @login_required
+@admin_required
 def heating_delete(request, pk):
     heating = get_object_or_404(
         HeatingOption,

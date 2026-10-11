@@ -50,7 +50,7 @@
                         <a href="{% url 'catalog:waterfall_detail' waterfall.pk %}">
                             Visualizar
                         </a>
-
+                        {% if request.user.role == "admin" %}
                         <a href="{% url 'catalog:waterfall_update' waterfall.pk %}">
                             Editar
                         </a>
@@ -62,6 +62,8 @@
                             Excluir
                         </a>
 
+
+{% endif %}
                     </div>
 
                 </div>

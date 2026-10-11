@@ -5,7 +5,7 @@ from django.urls import reverse
 
 from dashboard.models import ActivityLog
 from dashboard.utils import log_activity
-
+from accounts.decorators import admin_required
 from catalog.forms import WaterfallModelForm
 from catalog.models import Waterfall
 
@@ -53,6 +53,7 @@ def waterfall_list(request):
 
 
 @login_required
+@admin_required
 def waterfall_create(request):
     if request.method == "POST":
         form = WaterfallModelForm(request.POST)
@@ -131,6 +132,7 @@ def waterfall_detail(request, pk):
 
 
 @login_required
+@admin_required
 def waterfall_update(request, pk):
     waterfall = get_object_or_404(
         Waterfall,
@@ -187,6 +189,7 @@ def waterfall_update(request, pk):
 
 
 @login_required
+@admin_required
 def waterfall_delete(request, pk):
     waterfall = get_object_or_404(
         Waterfall,

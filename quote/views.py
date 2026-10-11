@@ -12,6 +12,9 @@ from django.http import HttpResponse
 from django.template.loader import render_to_string
 from weasyprint import HTML
 from decimal import Decimal
+from accounts.decorators import admin_required
+from .utils import quotes_for_user
+
 
 
 @login_required
@@ -99,7 +102,11 @@ def quote_create(request):
 def quote_detail(request, pk):
 
     quote = get_object_or_404(
-        Quote,
+        quotes_for_user(request.user).select_related(
+            "customer",
+            "pool",
+            "created_by",
+        ),
         pk=pk
     )
 
@@ -114,8 +121,9 @@ def quote_detail(request, pk):
 
 @login_required
 def quote_list(request):
+
     quotes = (
-        Quote.objects
+        quotes_for_user(request.user)
         .select_related(
             "customer",
             "pool",
@@ -135,7 +143,9 @@ def quote_list(request):
         )
 
     if status:
-        quotes = quotes.filter(status=status)
+        quotes = quotes.filter(
+            status=status
+        )
 
     if order == "oldest":
         quotes = quotes.order_by("created_at")
@@ -154,14 +164,26 @@ def quote_list(request):
         }
     )
 
+
 @login_required
 @transaction.atomic
 def quote_update(request, pk):
 
-    quote = get_object_or_404(
-        Quote.objects.select_for_update(),
-        pk=pk
+    quote = (
+        quotes_for_user(request.user)
+        .select_for_update()
+        .filter(pk=pk)
+        .first()
     )
+
+    if not quote:
+
+        messages.error(
+            request,
+            "Você não tem permissão para editar este orçamento."
+        )
+
+        return redirect("quote:quote_list")
 
     old_status = quote.status
 
@@ -259,6 +281,7 @@ def quote_update(request, pk):
 
 @login_required
 @transaction.atomic
+@admin_required
 def quote_delete(request, pk):
     quote = get_object_or_404(
         Quote.objects.select_for_update(),
@@ -304,7 +327,7 @@ def quote_delete(request, pk):
 def quote_pdf(request, pk):
 
     quote = get_object_or_404(
-        Quote.objects.select_related(
+        quotes_for_user(request.user).select_related(
             "customer",
             "pool",
             "heating",

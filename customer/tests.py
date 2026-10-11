@@ -65,6 +65,8 @@ class CustomerValidationTests(TestCase):
         self.assertContains(response, customer.name)
 
     def test_protected_delete_has_clear_feedback(self):
+        self.user.role = "admin"
+        self.user.save()
         form = CustomerForm(self.data())
         self.assertTrue(form.is_valid())
         customer = form.save()
@@ -79,6 +81,8 @@ class CustomerValidationTests(TestCase):
         response = self.client.post(reverse("customer:customer_create"), self.data(email="invalid"))
         self.assertContains(response, "Informe um e-mail válido.")
         self.assertFalse(Customer.objects.exists())
+        self.user.role = "admin"
+        self.user.save()
         for route in ("customer_update", "customer_delete"):
             self.assertEqual(self.client.post(reverse("customer:" + route, args=[99999]), {}).status_code, 404)
 

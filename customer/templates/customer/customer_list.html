@@ -602,10 +602,13 @@ Clientes | QuoteDesk
                                 </a>
 
 
-                                <a href="{% url 'customer:customer_delete' customer.pk %}" class="delete-action">
+                                {% if request.user.role == "admin" %}
+
+                                <a href="{% url 'customer:customer_delete' customer.pk %}"  class="delete-action">
                                     Excluir
                                 </a>
 
+                                {% endif %}
                             </div>
 
                         </div>

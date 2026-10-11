@@ -2,7 +2,7 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, redirect, render
 from django.db.models import Q
 from django.db.models.deletion import ProtectedError
-
+from accounts.decorators import admin_required
 from .forms import CustomerForm
 from customer.models import Customer
 
@@ -141,6 +141,7 @@ def customer_update(request, pk):
 
 
 @login_required
+@admin_required
 def customer_delete(request, pk):
     customer = get_object_or_404(
         Customer,

@@ -1,0 +1,35 @@
+from decimal import Decimal
+
+from django.test import TestCase
+
+from accounts.models import User
+from customer.models import Customer
+from catalog.models import (
+    PoolModel,
+    HeatingOption,
+    Lighting,
+    Waterfall,
+    WaterTreatment,
+)
+from quote.models import Quote
+
+
+class QuoteModelTests(TestCase):
+
+    def setUp(self):
+
+        self.user = User.objects.create_user(
+            username="seller_test",
+            password="123456",
+        )
+
+        self.customer = Customer.objects.create(
+            name="Cliente Teste",
+        )
+
+        self.pool = PoolModel.objects.create(
+            model="Piscina Teste",
+            length=Decimal("8.00"),
+            width=Decimal("4.00"),
+            base_price=Decimal("10000.00"),
+        )

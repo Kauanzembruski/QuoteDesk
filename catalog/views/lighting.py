@@ -4,7 +4,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 
 from dashboard.models import ActivityLog
 from dashboard.utils import log_activity
-
+from accounts.decorators import admin_required
 from catalog.models import Lighting
 from catalog.forms import LightingPriceForm
 
@@ -38,6 +38,7 @@ def lighting_detail(request):
 
 
 @login_required
+@admin_required
 def lighting_update(request, pk):
     lighting = get_object_or_404(
         Lighting,
